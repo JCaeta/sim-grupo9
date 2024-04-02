@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from TP2.Generadores.generador_numeros import *
-from TP2.Graficos.histograma import histograma
+from Generador.generador_numeros import *
+from Histograma.histograma import *
 
 class MainWindow(tk.Toplevel):
     def __init__(self, parent):
