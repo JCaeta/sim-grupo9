@@ -14,7 +14,6 @@ from PyQt5.QtWidgets import (
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import numpy as np
-from PyQt5.QtCore import Qt
 
 class PyQtApp(QWidget):
     def __init__(self):
