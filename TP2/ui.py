@@ -91,6 +91,7 @@ class VentanaUniforme(tk.Toplevel):
             if b > a:
                 nums = [generador_uniforme(a, b) for _ in range(tamaño)]
                 self.destroy()
+                VentanaNumeros(self.master, nums)
                 histograma(nums, intervalos)
             else:
                 messagebox.showerror("Error", "'b' tiene que ser mayor que 'a''.")
@@ -118,6 +119,7 @@ class VentanaExponencial(tk.Toplevel):
             if lamda > 0:
                 nums = [generador_exponencial(lamda) for _ in range(tamaño)]
                 self.destroy()
+                VentanaNumeros(self.master, nums)
                 histograma(nums, intervalos)
             else:
                 messagebox.showerror("Error", "Lambda debe ser positivo")
@@ -159,11 +161,30 @@ class VentanaNormal(tk.Toplevel):
             if desviacion >= 0:
                 nums = [generador_normal_conv(media, desviacion) for _ in range(tamaño)]
                 self.destroy()
+                VentanaNumeros(self.master, nums)
                 histograma(nums, intervalos)
             else:
                 messagebox.showerror("Error", "La desviación estándar tiene que ser mayor o igual a 0.")
         except ValueError:
             messagebox.showerror("Error", "Invalid input. Please enter valid numbers.")
+
+class VentanaNumeros(tk.Toplevel):
+    def __init__(self, parent, numeros):
+        super().__init__(parent)
+        self.title("Números Aleatorios Generados")
+        self.geometry("400x300")
+
+        self.tree = ttk.Treeview(self, columns=("N", "Número"), show="headings")
+        self.tree.heading("N", text="N")
+        self.tree.heading("Número", text="Número")
+        self.tree.pack(fill=tk.BOTH, expand=True)
+
+        vsb = ttk.Scrollbar(self, orient="vertical", command=self.tree.yview)
+        vsb.pack(side='right', fill='y')
+        self.tree.configure(yscrollcommand=vsb.set)
+
+        for i, numero in enumerate(numeros, start=1):
+            self.tree.insert("", "end", values=(i, numero))
 
 class GeneradorHistograma(tk.Tk):
     def __init__(self):
