@@ -1,5 +1,5 @@
-from ui import GeneradorHistograma
+from ui import App
 
 if __name__ == "__main__":
-    app = GeneradorHistograma()
+    app = App()
     app.mainloop()

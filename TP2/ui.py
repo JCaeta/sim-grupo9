@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from Generador.generador_numeros import *
 from Histograma.histograma import *
 
+
 class MainWindow(tk.Toplevel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -36,6 +37,7 @@ class MainWindow(tk.Toplevel):
         except ValueError:
             messagebox.showerror("Error", "Ingreso inválido")
 
+
 class DistribucionWindow(tk.Toplevel):
     def __init__(self, parent, tamaño, intervalos):
         super().__init__(parent)
@@ -62,6 +64,7 @@ class DistribucionWindow(tk.Toplevel):
             VentanaExponencial(self.master, tamaño, intervalos)
         elif distribucion == "Normal":
             VentanaNormal(self.master, tamaño, intervalos)
+
 
 class VentanaUniforme(tk.Toplevel):
     def __init__(self, parent, tamaño, intervalos):
@@ -98,6 +101,7 @@ class VentanaUniforme(tk.Toplevel):
         except ValueError:
             messagebox.showerror("Error", "Ingreso inválido")
 
+
 class VentanaExponencial(tk.Toplevel):
     def __init__(self, parent, tamaño, intervalos):
         super().__init__(parent)
@@ -125,6 +129,7 @@ class VentanaExponencial(tk.Toplevel):
                 messagebox.showerror("Error", "Lambda debe ser positivo")
         except ValueError:
             messagebox.showerror("Error", "Ingreso inválido")
+
 
 class VentanaNormal(tk.Toplevel):
     def __init__(self, parent, tamaño, intervalos):
@@ -159,14 +164,30 @@ class VentanaNormal(tk.Toplevel):
             media = float(media_input)
             desviacion = float(desviacion_input)
             if desviacion >= 0:
-                nums = [generador_normal_conv(media, desviacion) for _ in range(tamaño)]
+                # Si se quiere usar por Convolución ( tarda más )
+                # nums = [generador_normal_conv(media, desviacion,) for _ in range(tamaño)]
+
+                # Caminos a seguir dependiendo si el tamaño de la muestra es par o impar (Box-Muller)
+                nums = []
+
+                # Si el tamaño de la muestra es par
+                for _ in range(tamaño // 2):
+                    n1, n2 = generador_normal_bm(media, desviacion)
+                    nums.extend([n1, n2])
+
+                # Si el tamaño de la muestra es impar
+                if tamaño % 2 != 0:
+                    nums.append(generador_normal_bm(media, desviacion)[0])  # Se agrega solo el primer numero del par
+
                 self.destroy()
                 VentanaNumeros(self.master, nums)
                 histograma(nums, intervalos)
             else:
                 messagebox.showerror("Error", "La desviación estándar tiene que ser mayor o igual a 0.")
+
         except ValueError:
             messagebox.showerror("Error", "Invalid input. Please enter valid numbers.")
+
 
 class VentanaNumeros(tk.Toplevel):
     def __init__(self, parent, numeros):
@@ -186,7 +207,8 @@ class VentanaNumeros(tk.Toplevel):
         for i, numero in enumerate(numeros, start=1):
             self.tree.insert("", "end", values=(i, numero))
 
-class GeneradorHistograma(tk.Tk):
+
+class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Trabajo Práctico nº2")
