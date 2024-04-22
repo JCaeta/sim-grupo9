@@ -33,6 +33,7 @@ def encontrar_ausentimo(rnd_obrero):
 
     return 4
 
+
 def es_operable(cant_obreros):
     if (CANTIDAD_MINIMA_OBREROS_PRESENTES - cant_obreros) < 20:
         return "Si"
@@ -81,4 +82,3 @@ def simulacion(cant_dias, cant_obreros, rango_desde, rango_hasta):
         return lista_simulacion[rango_desde-1:rango_hasta]
 
     return lista_simulacion[rango_desde-1:rango_hasta] + [lista_simulacion[-1]]
-
