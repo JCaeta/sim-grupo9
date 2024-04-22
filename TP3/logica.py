@@ -34,8 +34,8 @@ def encontrar_ausentimo(rnd_obrero):
     return 4
 
 
-def es_operable(cant_obreros):
-    if (CANTIDAD_MINIMA_OBREROS_PRESENTES - cant_obreros) < 20:
+def es_operable(obreros_presentes):
+    if obreros_presentes >= 20:
         return "Si"
     return "No"
 
@@ -49,11 +49,11 @@ def simulacion(cant_dias, cant_obreros, rango_desde, rango_hasta):
         rnd_obrero = round(rnd(), 4)
         obreros_ausentes = encontrar_ausentimo(rnd_obrero)
         obreros_presentes = cant_obreros - obreros_ausentes
-        planta_operable = es_operable(cant_obreros)
+        planta_operable = es_operable(obreros_presentes)
         ingresos_por_venta = 0
         costos_por_venta = 0
 
-        if planta_operable:
+        if planta_operable == "Si":
             ingresos_por_venta = INGRESOS
             costos_por_venta = COSTO
 
