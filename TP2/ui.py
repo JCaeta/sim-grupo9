@@ -186,7 +186,7 @@ class VentanaNormal(tk.Toplevel):
                 messagebox.showerror("Error", "La desviación estándar tiene que ser mayor o igual a 0.")
 
         except ValueError:
-            messagebox.showerror("Error", "Invalid input. Please enter valid numbers.")
+            messagebox.showerror("Error", "Ingrese números válidos.")
 
 
 class VentanaNumeros(tk.Toplevel):
