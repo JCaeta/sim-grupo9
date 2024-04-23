@@ -193,16 +193,16 @@ class VentanaNumeros(tk.Toplevel):
     def __init__(self, parent, numeros):
         super().__init__(parent)
         self.title("Números Aleatorios Generados")
-        self.geometry("400x300")
+        self.geometry("420x300")
 
         self.tree = ttk.Treeview(self, columns=("N", "Número"), show="headings")
         self.tree.heading("N", text="N")
         self.tree.heading("Número", text="Número")
-        self.tree.pack(fill=tk.BOTH, expand=True)
+        self.tree.pack(fill=tk.BOTH, expand=True, side="left")
 
-        vsb = ttk.Scrollbar(self, orient="vertical", command=self.tree.yview)
-        vsb.pack(side='right', fill='y')
-        self.tree.configure(yscrollcommand=vsb.set)
+        scrollbar = tk.Scrollbar(self, orient="vertical", command=self.tree.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.tree.configure(yscrollcommand=scrollbar.set)
 
         for i, numero in enumerate(numeros, start=1):
             self.tree.insert("", "end", values=(i, numero))
