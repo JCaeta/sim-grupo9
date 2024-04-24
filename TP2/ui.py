@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from Generador.generador_numeros import *
 from Histograma.histograma import *
+from openpyxl import Workbook
+from openpyxl.drawing.image import Image as XLImage
 
 
 class MainWindow(tk.Toplevel):
@@ -95,7 +97,10 @@ class VentanaUniforme(tk.Toplevel):
                 nums = [generador_uniforme(a, b) for _ in range(tamaño)]
                 self.destroy()
                 VentanaNumeros(self.master, nums)
-                histograma(nums, intervalos)
+                tabla_datos, _, _ = generar_tabla_frecuencias(nums, intervalos)
+                VentanaTablaDistribucionFrecuencia(self.master, tabla_datos)
+                img_histograma = generar_histograma(tabla_datos)
+                VentanaGuardarExcel(self.master, nums, tabla_datos, img_histograma)
             else:
                 messagebox.showerror("Error", "'b' tiene que ser mayor que 'a''.")
         except ValueError:
@@ -124,7 +129,10 @@ class VentanaExponencial(tk.Toplevel):
                 nums = [generador_exponencial(lamda) for _ in range(tamaño)]
                 self.destroy()
                 VentanaNumeros(self.master, nums)
-                histograma(nums, intervalos)
+                tabla_datos, _, _ = generar_tabla_frecuencias(nums, intervalos)
+                VentanaTablaDistribucionFrecuencia(self.master, tabla_datos)
+                img_histograma = generar_histograma(tabla_datos)
+                VentanaGuardarExcel(self.master, nums, tabla_datos, img_histograma)
             else:
                 messagebox.showerror("Error", "Lambda debe ser positivo")
         except ValueError:
@@ -164,9 +172,6 @@ class VentanaNormal(tk.Toplevel):
             media = float(media_input)
             desviacion = float(desviacion_input)
             if desviacion >= 0:
-                # Si se quiere usar por Convolución ( tarda más )
-                # nums = [generador_normal_conv(media, desviacion,) for _ in range(tamaño)]
-
                 # # Caminos a seguir dependiendo si el tamaño de la muestra es par o impar (Box-Muller)
                 nums = []
 
@@ -181,18 +186,22 @@ class VentanaNormal(tk.Toplevel):
 
                 self.destroy()
                 VentanaNumeros(self.master, nums)
-                histograma(nums, intervalos)
+                tabla_datos, _, _ = generar_tabla_frecuencias(nums, intervalos)
+                VentanaTablaDistribucionFrecuencia(self.master, tabla_datos)
+                img_histograma = generar_histograma(tabla_datos)
+                VentanaGuardarExcel(self.master, nums, tabla_datos, img_histograma)
             else:
                 messagebox.showerror("Error", "La desviación estándar tiene que ser mayor o igual a 0.")
 
         except ValueError:
             messagebox.showerror("Error", "Ingrese números válidos.")
 
+
 class VentanaNumeros(tk.Toplevel):
     def __init__(self, parent, numeros):
         super().__init__(parent)
         self.title("Números Aleatorios Generados")
-        self.geometry("420x300")
+        self.geometry("430x300")
 
         self.tree = ttk.Treeview(self, columns=("N", "Número"), show="headings")
         self.tree.heading("N", text="N")
@@ -205,6 +214,85 @@ class VentanaNumeros(tk.Toplevel):
 
         for i, numero in enumerate(numeros, start=1):
             self.tree.insert("", "end", values=(i, numero))
+
+
+class VentanaTablaDistribucionFrecuencia(tk.Toplevel):
+    def __init__(self, parent, tabla_datos):
+        super().__init__(parent)
+        self.title("Tabla de Distribución de Frecuencias")
+        self.geometry("430x300")
+
+        self.tree = ttk.Treeview(self, columns=("Intervalo", "Frecuencia Observada"), show="headings")
+        self.tree.heading("Intervalo", text="Intervalo")
+        self.tree.heading("Frecuencia Observada", text="Frecuencia Observada")
+        self.tree.pack(fill=tk.BOTH, expand=True, side="left")
+
+        scrollbar = tk.Scrollbar(self, orient="vertical", command=self.tree.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.tree.configure(yscrollcommand=scrollbar.set)
+
+        for dato in tabla_datos:
+            int_desde = round((dato['Intervalo'][0]), 2)
+            int_hasta = round((dato['Intervalo'][1]), 2)
+
+            intervalo = f"{int_desde:.2f} - {int_hasta:.2f}"
+            frecuencia = dato['Frecuencia Observada']
+
+            self.tree.insert("", "end", values=(intervalo, frecuencia))
+
+
+class VentanaGuardarExcel(tk.Toplevel):
+    def __init__(self, parent, numeros, tabla_datos, histograma):
+        super().__init__(parent)
+        self.title("Guardar en Excel")
+        self.geometry("300x100")
+
+        self.label = tk.Label(self, text="¿Desea guardar los datos en Excel?")
+        self.label.pack()
+
+        self.save_button = tk.Button(self, text="Guardar", command=lambda: self.guardar_excel(numeros, tabla_datos,
+                                                                                              histograma,
+                                                                                              'archivo.xlsx'))
+        self.save_button.pack()
+
+    def guardar_excel(self, numeros_aleatorios, tabla_datos, histograma, ruta_archivo):
+        try:
+            # Crear un Excel
+            libro = Workbook()
+            hoja = libro.active
+
+            # Encabezados para la tabla de números aleatorios
+            hoja['B2'] = 'N'
+            hoja['C2'] = 'Nº Aleatorio'
+
+            # Columna de números aleatorios en la hoja de Excel
+            for i, numero in enumerate(numeros_aleatorios, start=1):
+                hoja[f'B{i + 2}'] = i
+                hoja[f'C{i + 2}'] = numero
+
+            # Encabezados para la tabla de intervalos y frecuencias
+            hoja['E2'] = 'Intervalo'
+            hoja['F2'] = 'Fo'  # Frecuencia Observada
+
+            # Escribir los datos de la tabla de intervalos y frecuencias
+            for i, dato in enumerate(tabla_datos, start=1):
+                int_desde = round(dato['Intervalo'][0], 2)
+                int_hasta = round(dato['Intervalo'][1], 2)
+                intervalo = f"{int_desde} - {int_hasta}"
+                hoja[f'E{i + 2}'] = intervalo
+                hoja[f'F{i + 2}'] = dato['Frecuencia Observada']
+
+                # Agregar la imagen del histograma al Excel
+            xl_image = XLImage(histograma)
+            hoja.add_image(xl_image, 'L2')
+
+            # Guardar el archivo Excel
+            libro.save(ruta_archivo)
+            messagebox.showinfo(title="Exito", message="Archivo guardado correctamente")
+            self.destroy()
+
+        except Exception as e:
+            messagebox.showerror(title="Error", message="Tiene el archivo excel abierto. Cierre e intente nuevamente")
 
 
 class App(tk.Tk):
