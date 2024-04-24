@@ -167,7 +167,7 @@ class VentanaNormal(tk.Toplevel):
                 # Si se quiere usar por Convolución ( tarda más )
                 # nums = [generador_normal_conv(media, desviacion,) for _ in range(tamaño)]
 
-                # Caminos a seguir dependiendo si el tamaño de la muestra es par o impar (Box-Muller)
+                # # Caminos a seguir dependiendo si el tamaño de la muestra es par o impar (Box-Muller)
                 nums = []
 
                 # Si el tamaño de la muestra es par
@@ -187,7 +187,6 @@ class VentanaNormal(tk.Toplevel):
 
         except ValueError:
             messagebox.showerror("Error", "Ingrese números válidos.")
-
 
 class VentanaNumeros(tk.Toplevel):
     def __init__(self, parent, numeros):
