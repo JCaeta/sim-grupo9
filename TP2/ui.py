@@ -21,7 +21,7 @@ class MainWindow(tk.Toplevel):
         self.label_intervalos = tk.Label(self, text="Seleccione la cantidad de intervalos:")
         self.label_intervalos.pack()
 
-        self.intervalos_combobox = ttk.Combobox(self, values=[5, 10, 15, 20, 30, 40, 50], state="readonly")
+        self.intervalos_combobox = ttk.Combobox(self, values=[5, 10, 15, 20, 25], state="readonly")
         self.intervalos_combobox.pack()
 
         self.ok_button = tk.Button(self, text="OK", command=self.validacion_datos)
@@ -206,6 +206,10 @@ class VentanaNumeros(tk.Toplevel):
         self.tree = ttk.Treeview(self, columns=("N", "Número"), show="headings")
         self.tree.heading("N", text="N")
         self.tree.heading("Número", text="Número")
+
+        self.tree.column("N", width=25, anchor="center")
+        self.tree.column("Número", width=100, anchor="center")
+
         self.tree.pack(fill=tk.BOTH, expand=True, side="left")
 
         scrollbar = tk.Scrollbar(self, orient="vertical", command=self.tree.yview)
@@ -222,9 +226,15 @@ class VentanaTablaDistribucionFrecuencia(tk.Toplevel):
         self.title("Tabla de Distribución de Frecuencias")
         self.geometry("430x300")
 
-        self.tree = ttk.Treeview(self, columns=("Intervalo", "Frecuencia Observada"), show="headings")
-        self.tree.heading("Intervalo", text="Intervalo")
-        self.tree.heading("Frecuencia Observada", text="Frecuencia Observada")
+        self.tree = ttk.Treeview(self, columns=("Lim. Inf.", "Lim. Sup.", "Frec. Observada"), show="headings")
+        self.tree.heading("Lim. Inf.", text="Lim. Inf.")
+        self.tree.heading("Lim. Sup.", text="Lim. Sup.")
+        self.tree.heading("Frec. Observada", text="Frec. Observada")
+
+        self.tree.column("Lim. Inf.", width=50, anchor="center")
+        self.tree.column("Lim. Sup.", width=50, anchor="center")
+        self.tree.column("Frec. Observada", width=150, anchor="center")
+
         self.tree.pack(fill=tk.BOTH, expand=True, side="left")
 
         scrollbar = tk.Scrollbar(self, orient="vertical", command=self.tree.yview)
@@ -235,10 +245,11 @@ class VentanaTablaDistribucionFrecuencia(tk.Toplevel):
             int_desde = round((dato['Intervalo'][0]), 2)
             int_hasta = round((dato['Intervalo'][1]), 2)
 
-            intervalo = f"{int_desde:.2f} - {int_hasta:.2f}"
+            lim_inf = f"{int_desde:.2f}"
+            lim_sup = f"{int_hasta:.2f}"
             frecuencia = dato['Frecuencia Observada']
 
-            self.tree.insert("", "end", values=(intervalo, frecuencia))
+            self.tree.insert("", "end", values=(lim_inf, lim_sup, frecuencia))
 
 
 class VentanaGuardarExcel(tk.Toplevel):
@@ -271,16 +282,17 @@ class VentanaGuardarExcel(tk.Toplevel):
                 hoja[f'C{i + 2}'] = numero
 
             # Encabezados para la tabla de intervalos y frecuencias
-            hoja['E2'] = 'Intervalo'
-            hoja['F2'] = 'Fo'  # Frecuencia Observada
+            hoja['E2'] = 'Lim. Inf'
+            hoja['F2'] = 'Lim. Sup'
+            hoja['G2'] = 'Fo'  # Frecuencia Observada
 
             # Escribir los datos de la tabla de intervalos y frecuencias
             for i, dato in enumerate(tabla_datos, start=1):
                 int_desde = round(dato['Intervalo'][0], 2)
                 int_hasta = round(dato['Intervalo'][1], 2)
-                intervalo = f"{int_desde} - {int_hasta}"
-                hoja[f'E{i + 2}'] = intervalo
-                hoja[f'F{i + 2}'] = dato['Frecuencia Observada']
+                hoja[f'E{i + 2}'] = int_desde
+                hoja[f'F{i + 2}'] = int_hasta
+                hoja[f'G{i + 2}'] = dato['Frecuencia Observada']
 
                 # Agregar la imagen del histograma al Excel
             xl_image = XLImage(histograma)

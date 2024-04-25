@@ -19,7 +19,7 @@ def generar_tabla_frecuencias(numeros, intervalos):
 def generar_histograma(tabla_datos):
 
     plt.close()
-    plt.figure(figsize=(12, 12))
+    plt.figure(figsize=(10, 12))
 
     # Extraer los datos necesarios para el histograma
     intervalos = [dato['Intervalo'] for dato in tabla_datos]
@@ -44,7 +44,7 @@ def generar_histograma(tabla_datos):
 
     etiquetas_intervalos = [f"{lim_inf:.2f} - {lim_sup:.2f}" for lim_inf, lim_sup in
                             zip(limite_inferior, limite_superior)]
-    plt.xticks(centros_intervalos, etiquetas_intervalos, rotation=45)
+    plt.xticks(centros_intervalos, etiquetas_intervalos, rotation=60)
 
     plt.xlabel('Intervalo')
     plt.ylabel('Frecuencia Observada')
