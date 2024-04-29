@@ -12,6 +12,7 @@ def generar_tabla_frecuencias(numeros, intervalos):
         tabla_datos.append({'Intervalo': (intervalo, intervalo + (bins[1] - bins[0])),
                             'Frecuencia Observada': int(freq)})
 
+
     # Devolver los datos de la tabla de distribución de frecuencias y el histograma
     return tabla_datos, frecuencias, bins
 

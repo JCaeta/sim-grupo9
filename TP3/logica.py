@@ -35,6 +35,17 @@ class Parametros:
             probabilidad_acumulada += probabilidad
             self.probabilidades.append((ausentes, probabilidad_acumulada))
 
+    def getDistribucionFrecuencia(self):
+        distribucion = []
+
+        for i, item in enumerate(self.probabilidades):
+            num_obreros_ausentes, probabilidad_acumulada = item
+            probabilidad = probabilidad_acumulada - (self.probabilidades[i-1][1] if i > 0 else 0)
+            frecuencia = round(probabilidad * 100)
+            distribucion.append([num_obreros_ausentes, frecuencia, round((probabilidad), 4), round((probabilidad_acumulada), 4)])
+
+        return distribucion
+    
     def getProbabilidad(self):
         return self.probabilidades
 
@@ -108,7 +119,7 @@ def es_operable(obreros_presentes):
     return "No"
 
 
-def simulacion(cant_dias, cant_obreros, rango_desde, rango_hasta, objeto_parametros):
+def simulacion(cant_dias, cant_obreros, rango_desde, cantidad_datos, objeto_parametros):
     lista_simulacion = []
     beneficio_acumulado = 0
 
@@ -128,9 +139,9 @@ def simulacion(cant_dias, cant_obreros, rango_desde, rango_hasta, objeto_paramet
             ingresos_por_venta = objeto_parametros.getIngreso()
             costos_por_venta = objeto_parametros.getCostoVenta()
 
-        sueldos_obreros = cant_obreros * objeto_parametros.getRemuneracionObrero()
+        remuneracion_obreros = cant_obreros * objeto_parametros.getRemuneracionObrero()
 
-        beneficio = ingresos_por_venta - costos_por_venta - sueldos_obreros
+        beneficio = ingresos_por_venta - costos_por_venta - remuneracion_obreros
         beneficio_acumulado += beneficio
 
         sim = Simulacion(
@@ -145,12 +156,10 @@ def simulacion(cant_dias, cant_obreros, rango_desde, rango_hasta, objeto_paramet
 
         lista_simulacion.append(sim)
 
-    ultimo_dia = lista_simulacion[-1].dia
+    if rango_desde + cantidad_datos <= cant_dias:
+        return lista_simulacion[rango_desde - 1:rango_desde + cantidad_datos] + [lista_simulacion[-1]]
+    return lista_simulacion[rango_desde - 1:] + [lista_simulacion[-1]]
 
-    if len(lista_simulacion) == 1:
-        return lista_simulacion
+    
 
-    if rango_hasta == ultimo_dia:
-        return lista_simulacion[rango_desde - 1:rango_hasta]
 
-    return lista_simulacion[rango_desde - 1:rango_hasta] + [lista_simulacion[-1]]
