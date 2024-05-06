@@ -252,7 +252,7 @@ class SimulacionWindow(tk.Toplevel):
                 return
 
             for i in frecuencias:
-                if not i.isdigit():
+                if not i.isdigit() or i == "0":
                     messagebox.showerror("Error", "Ingresó alguna frecuencia que no es entera o positiva")
                     return
 

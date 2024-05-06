@@ -156,8 +156,12 @@ def simulacion(cant_dias, cant_obreros, rango_desde, cantidad_datos, objeto_para
 
         lista_simulacion.append(sim)
 
-    if rango_desde + cantidad_datos <= cant_dias:
+    if rango_desde + cantidad_datos < cant_dias:
         return lista_simulacion[rango_desde - 1:rango_desde + cantidad_datos] + [lista_simulacion[-1]]
+
+    if rango_desde + cantidad_datos == cant_dias:
+        return lista_simulacion[rango_desde - 1:rango_desde + cantidad_datos]
+
     return lista_simulacion[rango_desde - 1:] + [lista_simulacion[-1]]
 
     
