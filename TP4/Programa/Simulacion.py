@@ -80,19 +80,6 @@ class Simulacion:
 
         return terminales_libres
 
-    def get_terminales_disponibles(self):
-        terminales_libres = self.get_terminales_libres()
-
-        if len(terminales_libres) > 0:
-            return terminales_libres
-
-        terminales_disponibles = []
-        for i in range(len(self.terminales)):
-            if self.terminales[i].get_estado() == "OM":
-                terminales_disponibles.append(self.terminales[i].get_numero())
-
-        return terminales_disponibles
-
     def get_estado_terminales(self):
         estado_terminales = []
         for i in range(len(self.terminales)):
@@ -150,16 +137,16 @@ class Simulacion:
     def encontrar_terminales_restantes_a_mantener(self, terminal_arreglada):
         terminales_restantes_a_mantener = []
 
-        if self.mantenimiento_t1 == "NO" and self.terminales[0].get_numero != terminal_arreglada:
+        if self.mantenimiento_t1 == "NO" and self.terminales[0].get_numero() + 1 != terminal_arreglada:
             terminales_restantes_a_mantener.append(1)
 
-        if self.mantenimiento_t2 == "NO" and self.terminales[0].get_numero != terminal_arreglada:
+        if self.mantenimiento_t2 == "NO" and self.terminales[1].get_numero() + 1 != terminal_arreglada:
             terminales_restantes_a_mantener.append(2)
 
-        if self.mantenimiento_t3 == "NO" and self.terminales[0].get_numero != terminal_arreglada:
+        if self.mantenimiento_t3 == "NO" and self.terminales[2].get_numero() + 1 != terminal_arreglada:
             terminales_restantes_a_mantener.append(3)
 
-        if self.mantenimiento_t4 == "NO" and self.terminales[0].get_numero != terminal_arreglada:
+        if self.mantenimiento_t4 == "NO" and self.terminales[3].get_numero() + 1 != terminal_arreglada:
             terminales_restantes_a_mantener.append(4)
 
         return terminales_restantes_a_mantener
