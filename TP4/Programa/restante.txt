@@ -1,0 +1,4 @@
+- Terminar de hacer evento fin_mantenimiento
+- Revisar caso de cuando la cola es mayor a 5
+- Revisar bien los estados
+- Armar la interfaz grafica

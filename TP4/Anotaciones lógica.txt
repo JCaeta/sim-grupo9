@@ -1,0 +1,34 @@
+llegada_empleado(numero_empleado):
+
+Descripción: Un empleado llega al sistema.
+Escenarios:
+a) Si hay una terminal libre, el empleado comenzará el proceso de registro en esa terminal.
+b) Si no hay una terminal libre y la cola es menor o igual a 5, el empleado se unirá a la cola.
+c) Si no hay una terminal libre y la cola es mayor a 5, el empleado se irá del sistema y se programará su regreso.
+
+
+fin_registro_huella_t(nºterminal, nºcliente)
+Descripción: Una terminal completa el registro de huella de un empleado.
+Escenarios:
+a) Si la cola está vacía al finalizar el registro de un empleado, la terminal seguirá libre.
+b) Si hay empleados en la cola, el siguiente empleado en la cola comenzará el registro.
+llegada_tecnico:
+
+Descripción: El técnico de mantenimiento llega al sistema.
+Acciones:
+El técnico buscará la primera terminal libre (o la primera si no hay ninguna libre) para iniciar el mantenimiento.
+Se lanzará el evento "fin_mantenimiento_terminal" cuando el técnico termine el mantenimiento en una terminal.
+fin_mantenimiento_terminal(numero_terminal):
+
+Descripción: El técnico de mantenimiento finaliza el mantenimiento en una terminal específica.
+Acciones:
+El técnico pasará a la siguiente terminal si hay más para mantener.
+La terminal cambiará su estado a "Ocupada en Mantenimiento" si estaba libre o a "Ocupada en Registro y Mantenimiento" si estaba ocupada en registro.
+
+
+reloj (en minutos): Representa el tiempo transcurrido en el sistema.
+evento_actual: Almacena el evento actual que se está ejecutando en el sistema. Tiene el formato especificado para cada evento.
+proximo_evento_a_ejecutarse: Almacena el próximo evento que se ejecutará en el sistema. También tiene el formato especificado para cada evento.
+Acumulador de tiempo de espera: Se utiliza para acumular el tiempo de espera de los empleados que están en estado "Esperando en Cola".
+Empleados que salen temporalmente: Un acumulador que aumenta en 1 cada vez que un empleado decide salir temporalmente del sistema porque la cola era mayor a 5.
+Empleados que pasaron por el sistema : Un acumulador que aumenta en 1 cada vez que un empleado termina su registro en el sistema.
