@@ -164,6 +164,3 @@ def simulacion(cant_dias, cant_obreros, rango_desde, cantidad_datos, objeto_para
 
     return lista_simulacion[rango_desde - 1:] + [lista_simulacion[-1]]
 
-    
-
-

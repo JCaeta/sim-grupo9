@@ -1,4 +1,2 @@
-- Terminar de hacer evento fin_mantenimiento
-- Revisar caso de cuando la cola es mayor a 5
-- Revisar bien los estados
-- Armar la interfaz grafica
+- Terminar de hacer lógica
+- Ver cómo agregar el estado de las 4 terminales y a los empleados en la tabla

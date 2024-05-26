@@ -9,18 +9,18 @@ from utilidades import *
 
 
 def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
-               minutoALlegadaTecnico, minutoBLlegadaTecnico,
+               horaALlegadaTecnico, minutoBLlegadaTecnico,
                minutoAMantenimientoTerminal, minutoBMantenimientoTerminal,
-               mediaLlegadaEmpleado, iteraciones, cantidad_datos_a_mostrar):
+               mediaLlegadaEmpleado, cantidad_tiempo, minuto_desde, minuto_hasta):
 
     # Inicialización de cada distribución
 
     dist_registro_huella = DistribucionFinRegistroHuella.DistribucionFinRegistroHuella(a=minutoARegistroHuella,
                                                                                        b=minutoBRegistroHuella)
 
-    dist_tecnico = DistribucionLlegadaTecnico.DistribucionLlegadaTecnico(a=minutoALlegadaTecnico * 60 -
+    dist_tecnico = DistribucionLlegadaTecnico.DistribucionLlegadaTecnico(a=horaALlegadaTecnico * 60 -
                                                                            minutoBLlegadaTecnico,
-                                                                         b=minutoALlegadaTecnico * 60 +
+                                                                         b=horaALlegadaTecnico * 60 +
                                                                            minutoBLlegadaTecnico)
 
     dist_mantenimiento_terminal = (DistribucionFinMantenimientoTerminal.
@@ -114,9 +114,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
     sim.proximo_evento = proximo_evento
     simulaciones.append(sim)
 
-    print(simulaciones[0].imprimir_columnas(0))
-
-    for i in range(1, 300):
+    for i in range(1, 50):
         simulaciones.append(Simulacion())
         reloj = menor_tiempo
         evento = simulaciones[i - 1].proximo_evento
@@ -391,11 +389,8 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
             # Destruir el empleado que terminó de registrar su huella
             numero_empleado_a_eliminar = simulaciones[i].buscar_empleado(int(numero_terminal_fin))
 
-            if numero_empleado_a_eliminar is not None:
-                numero_empleado_a_eliminar = numero_empleado_a_eliminar.get_numero()
-                simulaciones[i].eliminar_empleado(numero_empleado_a_eliminar)
-            else:
-                print(f"No se encontró un empleado en la terminal {numero_terminal_fin}")
+            numero_empleado_a_eliminar = numero_empleado_a_eliminar.get_numero()
+            simulaciones[i].eliminar_empleado(numero_empleado_a_eliminar)
 
         # Si el tecnico termina de hacer mantenimiento a una terminal
         elif evento.startswith("fin_mantenimiento_terminal"):
@@ -435,7 +430,6 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
 
             # Si ya terminó de mantener todas las terminales, se lanza el evento llegada_tecnico de vuelta
             if len(terminales_restantes) == 0:
-                print("NO QUEDAN MAS TERMINALES POR MANTENER, SE PEGA LA VUELTA")
                 simulaciones[i].rnd_llegada_tecnico = round(rnd(), 2)
                 simulaciones[i].tiempo_en_llegar_tecnico = generador_uniforme(a=dist_tecnico.get_a(),
                                                                               b=dist_tecnico.get_b(),
@@ -449,11 +443,8 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
 
             # Si todavia queda 1 o más terminales por mantener
             else:
-                print("QUEDAN MAS TERMINALES POR MANTENER")
-                print(terminales_restantes)
                 numero_terminal_elegida = random.choice(terminales_restantes)
                 numero_terminal_elegida = numero_terminal_elegida
-                print(numero_terminal_elegida)
                 simulaciones[i].rnd_fin_mantenimiento_terminal = round(rnd(), 2)
                 simulaciones[i].tiempo_mantenimiento_terminal = generador_uniforme(
                     a=dist_mantenimiento_terminal.get_a(),
@@ -557,20 +548,6 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
             proximo_evento += '(' + numero_terminal + ')'
 
         simulaciones[i].proximo_evento = proximo_evento
-        print(simulaciones[i].imprimir_columnas(i))
 
+    return simulaciones
 
-# PRUEBAS #
-minutoARegistroHuella = 5
-minutoBRegistroHuella = 8
-horaLlegadaTecnico = 1
-minutoBLlegadaTecnico = 3
-minutoAMantenimientoTerminal = 3
-minutoBMantenimientoTerminal = 10
-mediaLlegadaEmpleado = 2
-iteraciones = 10
-cantidad_datos_a_mostrar = ""
-
-simulacion(minutoARegistroHuella, minutoBRegistroHuella, horaLlegadaTecnico, minutoBLlegadaTecnico,
-           minutoAMantenimientoTerminal, minutoBMantenimientoTerminal, mediaLlegadaEmpleado,
-           iteraciones, cantidad_datos_a_mostrar)
