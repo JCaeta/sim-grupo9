@@ -115,7 +115,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
     sim.proximo_evento = proximo_evento
     simulaciones.append(sim)
 
-    for i in range(1, 200):
+    for i in range(1, 10):
         simulaciones.append(Simulacion())
         reloj = menor_tiempo
         evento = simulaciones[i - 1].proximo_evento
@@ -220,7 +220,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
             simulaciones[i].acumulador_empleados_que_pasaron_por_el_sistema = simulaciones[
                 i - 1].acumulador_empleados_que_pasaron_por_el_sistema
             simulaciones[i].lista_estado_terminales.append(simulaciones[i].get_estado_terminales())
-            simulaciones[i].lista_empleados.append(simulaciones[i].empleados)
+            simulaciones[i].lista_empleados.append(simulaciones[i].get_info_empleados())
 
         # Si llega el técnico
         elif evento.startswith("llegada_tecnico"):
@@ -398,7 +398,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
             simulaciones[i].proxima_llegada_empleado = simulaciones[i - 1].proxima_llegada_empleado
             simulaciones[i].proxima_llegada_tecnico = simulaciones[i - 1].proxima_llegada_tecnico
             simulaciones[i].lista_estado_terminales.append(simulaciones[i].get_estado_terminales())
-            simulaciones[i].lista_empleados.append(simulaciones[i].empleados)
+            simulaciones[i].lista_empleados.append(simulaciones[i].get_info_empleados())
 
         # Si el tecnico termina de hacer mantenimiento a una terminal
         elif evento.startswith("fin_mantenimiento_terminal"):

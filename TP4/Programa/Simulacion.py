@@ -100,17 +100,27 @@ class Simulacion:
 
         return info_terminales
 
-    def get_info_empleados(self):
+    '''def get_info_empleados(self):
         info = ""
         for i in range(len(self.empleados)):
             info += (f'\n\tNº Empleado: {self.empleados[i].get_numero()}\n\t'
                      f'Estado: {self.empleados[i].get_estado()}\n\t'
                      f'Minuto que entra en cola: {self.empleados[i].get_minuto_entrada_cola()}\n\t')
-        return info
+        return info'''
+
+    def get_info_empleados(self):
+        info_empleados = []
+        for i in range(len(self.empleados)):
+            info_empleados.append([self.empleados[i].get_numero(), self.empleados[i].get_estado(), self.empleados[i].get_minuto_entrada_cola()])
+
+        print(info_empleados)
+        return info_empleados
+
 
     def info_empleados_to_dict(self):
         info_empleados = []
         for i in self.lista_empleados:
+            print(i)
             pass
             '''info = {
                 'Nº Empleado': self.lista_empleados[k][k].get_numero(),
