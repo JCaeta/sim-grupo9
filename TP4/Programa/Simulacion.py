@@ -25,6 +25,7 @@ class Simulacion:
         self.acumulador_tiempo_espera = 0
         self.acumulador_empleados_que_salen_temporalmente = 0
         self.acumulador_empleados_que_pasaron_por_el_sistema = 0
+        self.lista_estado_terminales = []
         self.terminales = []
         self.estado_tecnico = "L"
         self.mantenimiento_t1 = ""
@@ -32,8 +33,8 @@ class Simulacion:
         self.mantenimiento_t3 = ""
         self.mantenimiento_t4 = ""
         self.tecnico = []
+        self.lista_empleados = []
         self.empleados = []
-
 
     def imprimir_columnas(self, iteracion):
         estado_terminales = self.get_estado_terminales()
@@ -87,6 +88,18 @@ class Simulacion:
 
         return estado_terminales
 
+    def get_info_terminales(self):
+        info_terminales = []
+        for i in self.lista_estado_terminales:
+            for j in range(4):
+                info = {
+                    f'Estado T{j+1}': i[j]
+                }
+
+                info_terminales.append(info)
+
+        return info_terminales
+
     def get_info_empleados(self):
         info = ""
         for i in range(len(self.empleados)):
@@ -94,6 +107,18 @@ class Simulacion:
                      f'Estado: {self.empleados[i].get_estado()}\n\t'
                      f'Minuto que entra en cola: {self.empleados[i].get_minuto_entrada_cola()}\n\t')
         return info
+
+    def info_empleados_to_dict(self):
+        info_empleados = []
+        for i in self.lista_empleados:
+            pass
+            '''info = {
+                'Nº Empleado': self.lista_empleados[k][k].get_numero(),
+                'Estado': self.lista_empleados[k][k].get_estado(),
+                'Min. entrada en cola': self.lista_empleados[k][k].get_minuto_entrada_cola()'
+            }
+            info_empleados.append(info)'''
+        return info_empleados
 
     def buscar_empleado_cola(self):
         empleado = None
@@ -116,7 +141,10 @@ class Simulacion:
     def eliminar_empleado(self, numero_empleado):
         for i in range(len(self.empleados)):
             if self.empleados[i].get_numero() == numero_empleado:
-                del self.empleados[i]
+                self.empleados[i].numero = ""
+                self.empleados[i].estado = ""
+                self.empleados[i].minuto_entrada_cola = ""
+                self.empleados[i].terminal = ""
                 break
 
     def buscar_empleado(self, numero_terminal):
@@ -151,4 +179,47 @@ class Simulacion:
 
         return terminales_restantes_a_mantener
 
+    def to_dict(self):
+        estado_terminales = self.get_info_terminales()
+        simulaciones_dict = {
+            'Evento': self.evento,
+            'Proximo Evento': self.proximo_evento,
+            'Reloj': self.reloj,
+            'RND Llegada Empleado': self.rnd_llegada_empleado,
+            'Tiempo entre Llegadas Empleado': self.tiempo_entre_llegadas_empleado,
+            'Proxima Llegada Empleado': self.proxima_llegada_empleado,
+            'RND Llegada Tecnico': self.rnd_llegada_tecnico,
+            'Tiempo en Llegar Tecnico': self.tiempo_en_llegar_tecnico,
+            'Proxima Llegada Tecnico': self.proxima_llegada_tecnico,
+            'RND Fin Registro Huella': self.rnd_fin_registro_huella,
+            'Tiempo Registro Huella': self.tiempo_registro_huella,
+            'Fin Registro Huella T1': self.fin_registro_huella_t1,
+            'Fin Registro Huella T2': self.fin_registro_huella_t2,
+            'Fin Registro Huella T3': self.fin_registro_huella_t3,
+            'Fin Registro Huella T4': self.fin_registro_huella_t4,
+            'Estado T1': estado_terminales[0]['Estado T1'],
+            'Estado T2': estado_terminales[1]['Estado T2'],
+            'Estado T3': estado_terminales[2]['Estado T3'],
+            'Estado T4': estado_terminales[3]['Estado T4'],
+            'Cola': self.cola,
+            'RND Fin Mantenimiento Terminal': self.rnd_fin_mantenimiento_terminal,
+            'Tiempo Mantenimiento Terminal': self.tiempo_mantenimiento_terminal,
+            'Fin Mantenimiento T1': self.fin_mantenimiento_terminal1,
+            'Fin Mantenimiento T2': self.fin_mantenimiento_terminal2,
+            'Fin Mantenimiento T3': self.fin_mantenimiento_terminal3,
+            'Fin Mantenimiento T4': self.fin_mantenimiento_terminal4,
+            'AC Tiempo Espera': self.acumulador_tiempo_espera,
+            'AC Empleados que Salen Temporalmente': self.acumulador_empleados_que_salen_temporalmente,
+            'AC Empleados que Pasaron por el Sistema': self.acumulador_empleados_que_pasaron_por_el_sistema,
+            'Estado Tecnico': self.estado_tecnico,
+            'Mantenimiento T1': self.mantenimiento_t1,
+            'Mantenimiento T2': self.mantenimiento_t2,
+            'Mantenimiento T3': self.mantenimiento_t3,
+            'Mantenimiento T4': self.mantenimiento_t4
+        }
 
+        # Agregar información de empleados dinámicamente
+        empleado_info = self.info_empleados_to_dict()
+
+
+        return simulaciones_dict

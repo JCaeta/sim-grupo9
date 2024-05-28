@@ -2,7 +2,83 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from logica import simulacion
-import tkinter.font as tkFont
+import pandas as pd
+from tksheet import Sheet
+
+
+class TablaPandas:
+    def __init__(self, datos):
+        self.datos = [sim.to_dict() for sim in datos]
+
+        # Convertir la instancia de Simulacion a un diccionario y luego a un DataFrame
+        df = pd.DataFrame(self.datos)
+
+        # Crear la ventana principal
+        root = tk.Tk()
+        root.title("Tabla de Simulación")
+
+        # Crear el widget Sheet
+        sheet = Sheet(root,
+                      data=df.values.tolist(),  # Convertir el DataFrame a una lista de listas
+                      headers=list(df.columns),  # Usar los nombres de las columnas del DataFrame como encabezados
+                      width=1000,
+                      height=400,
+                      column_width=200)
+
+        column_widths = {
+            'Evento': 200,
+            'Proximo Evento': 200,
+            'Reloj': 20,
+            'RND Llegada Empleado': 100,
+            'Tiempo entre Llegadas Empleado': 190,
+            'Proxima Llegada Empleado': 130,
+            'RND Llegada Tecnico': 90,
+            'Tiempo en Llegar Tecnico': 130,
+            'Proxima Llegada Tecnico': 130,
+            'RND Fin Registro Huella': 130,
+            'Tiempo Registro Huella': 130,
+            'Fin Registro Huella T1': 130,
+            'Fin Registro Huella T2': 130,
+            'Fin Registro Huella T3': 130,
+            'Fin Registro Huella T4': 130,
+            'Cola': 20,
+            'RND Fin Mantenim. Terminal': 180,
+            'Tiempo Mantenim. Terminal': 180,
+            'Fin Mantenim. T1': 130,
+            'Fin Mantenim. T2': 130,
+            'Fin Mantenim. T3': 130,
+            'Fin Mantenim. T4': 130,
+            'AC Tiempo Espera': 90,
+            'AC Emp. que Salen Temporalmente': 200,
+            'AC Emp. que Pasaron por Sistema': 200,
+            'Estado Tecnico': 70,
+            'Mantenim. T1': 70,
+            'Mantenim. T2': 70,
+            'Mantenim. T3': 70,
+            'Mantenim. T4': 70
+        }
+
+        for col, width in column_widths.items():
+            sheet.column_width(column=col, width=width)
+
+        sheet.enable_bindings("single_select",
+                              "row_select",
+                              "column_width_resize",
+                              "arrowkeys",
+                              "right_click_popup_menu",
+                              "rc_select",
+                              "copy",
+                              "cut",
+                              "paste",
+                              "delete",
+                              "undo")
+
+        for _ in df.columns:
+            sheet.align(align="center")
+
+        # Empaquetar el widget Sheet
+        sheet.pack(expand=True, fill='both')
+
 
 class TablaDatos:
     def __init__(self, datos):
@@ -25,33 +101,33 @@ class TablaDatos:
         self.treeview.heading("evento", text="Evento")
         self.treeview.heading("proximo_evento", text="Próximo Evento")
         self.treeview.heading("reloj", text="Reloj")
-        self.treeview.heading("rnd_llegada_empleado", text="RND")
-        self.treeview.heading("tiempo_entre_llegadas_empleado", text="Tiempo entre llegadas")
-        self.treeview.heading("proxima_llegada_empleado", text="Prox. llegada")
-        self.treeview.heading("rnd_llegada_tecnico", text="RND")
-        self.treeview.heading("tiempo_en_llegar_tecnico", text="Tiempo llegada")
-        self.treeview.heading("proxima_llegada_tecnico", text="Prox. llegada")
-        self.treeview.heading("rnd_fin_registro_huella", text="RND")
-        self.treeview.heading("tiempo_registro_huella", text="Tiempo Registro")
+        self.treeview.heading("rnd_llegada_empleado", text="RND Llegada Emp.")
+        self.treeview.heading("tiempo_entre_llegadas_empleado", text="Tiempo entre llegadas Emp.")
+        self.treeview.heading("proxima_llegada_empleado", text="Prox. llegada Emp.")
+        self.treeview.heading("rnd_llegada_tecnico", text="RND Llegada Tec.")
+        self.treeview.heading("tiempo_en_llegar_tecnico", text="Tiempo llegada Tec.")
+        self.treeview.heading("proxima_llegada_tecnico", text="Prox. llegada Tec.")
+        self.treeview.heading("rnd_fin_registro_huella", text="RND Tiempo Reg.")
+        self.treeview.heading("tiempo_registro_huella", text="Tiempo Registro Huella")
         self.treeview.heading("fin_registro_huella_t1", text="Fin Registro T1")
         self.treeview.heading("fin_registro_huella_t2", text="Fin Registro T2")
         self.treeview.heading("fin_registro_huella_t3", text="Fin Registro T3")
         self.treeview.heading("fin_registro_huella_t4", text="Fin Registro T4")
         self.treeview.heading("cola", text="Cola")
-        self.treeview.heading("rnd_fin_mantenimiento_terminal", text="RND")
-        self.treeview.heading("tiempo_mantenimiento_terminal", text="Tiempo Mantenimiento")
-        self.treeview.heading("fin_mantenimiento_t1", text="Fin Mantenimiento T1")
-        self.treeview.heading("fin_mantenimiento_t2", text="Fin Mantenimiento T2")
-        self.treeview.heading("fin_mantenimiento_t3", text="Fin Mantenimiento T3")
-        self.treeview.heading("fin_mantenimiento_t4", text="Fin Mantenimiento T4")
+        self.treeview.heading("rnd_fin_mantenimiento_terminal", text="RND Tiempo Mant.")
+        self.treeview.heading("tiempo_mantenimiento_terminal", text="Tiempo Mant.")
+        self.treeview.heading("fin_mantenimiento_t1", text="Fin Mant. T1")
+        self.treeview.heading("fin_mantenimiento_t2", text="Fin Mant. T2")
+        self.treeview.heading("fin_mantenimiento_t3", text="Fin Mant. T3")
+        self.treeview.heading("fin_mantenimiento_t4", text="Fin Mant. T4")
         self.treeview.heading("acumulador_tiempo_espera", text="AC Tiempo Espera")
         self.treeview.heading("acumulador_empleados_que_salen", text="AC Empleados que salen")
         self.treeview.heading("acumulador_empleados_que_pasaron", text="AC Empleados que pasaron")
-        self.treeview.heading("estado_tecnico", text="Estado Tecnico")
-        self.treeview.heading("mant_t1", text="Mantenimiento T1")
-        self.treeview.heading("mant_t2", text="Mantenimiento T2")
-        self.treeview.heading("mant_t3", text="Mantenimiento T3")
-        self.treeview.heading("mant_t4", text="Mantenimiento T4")
+        self.treeview.heading("estado_tecnico", text="Estado Tec.")
+        self.treeview.heading("mant_t1", text="Mant. T1")
+        self.treeview.heading("mant_t2", text="Mant. T2")
+        self.treeview.heading("mant_t3", text="Mant. T3")
+        self.treeview.heading("mant_t4", text="Mant. T4")
 
         for column in self.treeview["columns"]:
             self.treeview.column(column, width=175, anchor="center")
@@ -75,9 +151,11 @@ class TablaDatos:
                 obj.fin_registro_huella_t2, obj.fin_registro_huella_t3, obj.fin_registro_huella_t4,
                 obj.cola, obj.rnd_fin_mantenimiento_terminal, obj.tiempo_mantenimiento_terminal,
                 obj.fin_mantenimiento_terminal1, obj.fin_mantenimiento_terminal2, obj.fin_mantenimiento_terminal3,
-                obj.fin_mantenimiento_terminal4, obj.acumulador_tiempo_espera, obj.acumulador_empleados_que_salen_temporalmente,
+                obj.fin_mantenimiento_terminal4, obj.acumulador_tiempo_espera,
+                obj.acumulador_empleados_que_salen_temporalmente,
                 obj.acumulador_empleados_que_pasaron_por_el_sistema, obj.estado_tecnico, obj.mantenimiento_t1,
                 obj.mantenimiento_t2, obj.mantenimiento_t3, obj.mantenimiento_t4))
+
 
 class App:
     def __init__(self):
@@ -89,7 +167,8 @@ class App:
         icon = tk.PhotoImage(file='utn.png')
         self.ventana.iconphoto(False, icon)
 
-        self.label_cantidad_tiempo = tk.Label(text="Cantidad de tiempo (X)", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
+        self.label_cantidad_tiempo = tk.Label(text="Cantidad de tiempo (X)", font=("Helvetica", 14, "bold"),
+                                              bg='#f3f3d1')
         self.label_cantidad_tiempo.place(x=20, y=20)
         self.entry_cantidad_tiempo = tk.Entry(font=("Helvetica", 12), width=10)
         self.entry_cantidad_tiempo.place(x=65, y=50)
@@ -105,14 +184,16 @@ class App:
         self.entry_minuto_hasta.place(x=65, y=170)
 
         # MEDIO DE LA VENTANA #
-        self.label_evento_llegada_empleado = tk.Label(text="Evento llegada_empleado", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
+        self.label_evento_llegada_empleado = tk.Label(text="Evento llegada_empleado", font=("Helvetica", 14, "bold"),
+                                                      bg='#f3f3d1')
         self.label_evento_llegada_empleado.place(x=300, y=20)
         self.entry_media_evento_llegada_empleado = tk.Entry(font=("Helvetica", 12), width=10)
         self.entry_media_evento_llegada_empleado.place(x=350, y=50)
         self.label_media_llegada_empleado = tk.Label(text="Media", font=("Helvetica", 12), bg='#f3f3d1')
         self.label_media_llegada_empleado.place(x=460, y=50)
 
-        self.label_evento_llegada_tecnico = tk.Label(text="Evento llegada_tecnico", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
+        self.label_evento_llegada_tecnico = tk.Label(text="Evento llegada_tecnico", font=("Helvetica", 14, "bold"),
+                                                     bg='#f3f3d1')
         self.label_evento_llegada_tecnico.place(x=300, y=110)
         self.label_hora_A_llegada_tecnico = tk.Label(text="A (en horas)", font=("Helvetica", 12), bg='#f3f3d1')
         self.label_hora_A_llegada_tecnico.place(x=460, y=140)
@@ -124,7 +205,8 @@ class App:
         self.entry_minuto_B_llegada_tecnico.place(x=350, y=170)
 
         # DERECHO DE LA VENTANA #
-        self.label_evento_fin_registro_huella = tk.Label(text="Evento fin_registro_huella", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
+        self.label_evento_fin_registro_huella = tk.Label(text="Evento fin_registro_huella",
+                                                         font=("Helvetica", 14, "bold"), bg='#f3f3d1')
         self.label_evento_fin_registro_huella.place(x=600, y=20)
         self.entry_minuto_A_fin_registro_huella = tk.Entry(font=("Helvetica", 12), width=10)
         self.entry_minuto_A_fin_registro_huella.place(x=650, y=50)
@@ -135,18 +217,22 @@ class App:
         self.label_minuto_B_fin_registro_huella = tk.Label(text="B (en minutos)", font=("Helvetica", 12), bg='#f3f3d1')
         self.label_minuto_B_fin_registro_huella.place(x=750, y=80)
 
-        self.label_evento_fin_mantenimiento_terminal = tk.Label(text="Evento fin_mantenimiento_terminal", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
+        self.label_evento_fin_mantenimiento_terminal = tk.Label(text="Evento fin_mantenimiento_terminal",
+                                                                font=("Helvetica", 14, "bold"), bg='#f3f3d1')
         self.label_evento_fin_mantenimiento_terminal.place(x=600, y=110)
         self.entry_minuto_A_fin_mantenimiento_terminal = tk.Entry(font=("Helvetica", 12), width=10)
         self.entry_minuto_A_fin_mantenimiento_terminal.place(x=650, y=140)
-        self.label_minuto_A_fin_mantenimiento_terminal = tk.Label(text="A (en minutos)", font=("Helvetica", 12), bg='#f3f3d1')
+        self.label_minuto_A_fin_mantenimiento_terminal = tk.Label(text="A (en minutos)", font=("Helvetica", 12),
+                                                                  bg='#f3f3d1')
         self.label_minuto_A_fin_mantenimiento_terminal.place(x=750, y=140)
         self.entry_minuto_B_fin_mantenimiento_terminal = tk.Entry(font=("Helvetica", 12), width=10)
         self.entry_minuto_B_fin_mantenimiento_terminal.place(x=650, y=170)
-        self.label_minuto_B_fin_mantenimiento_terminal = tk.Label(text="B (en minutos)", font=("Helvetica", 12), bg='#f3f3d1')
+        self.label_minuto_B_fin_mantenimiento_terminal = tk.Label(text="B (en minutos)", font=("Helvetica", 12),
+                                                                  bg='#f3f3d1')
         self.label_minuto_B_fin_mantenimiento_terminal.place(x=750, y=170)
 
-        self.button = tk.Button(text="Generar simulación", font=("Consolas", 16, "bold"), bg="lightblue", fg="black", command=self.validacion_datos)
+        self.button = tk.Button(text="Generar simulación", font=("Consolas", 16, "bold"),
+                                bg="lightblue", fg="black", command=self.validacion_datos)
         self.button.place(x=360, y=250, width=300, height=50)
 
     def validacion_datos(self):
@@ -173,7 +259,7 @@ class App:
             minuto_desde = 1
             minuto_hasta = 2
 
-            minuto_B_es_correcto = True if (hora_A_llegada_tecnico*60-minuto_B_llegada_tecnico >= 0) else False
+            minuto_B_es_correcto = True if (hora_A_llegada_tecnico * 60 - minuto_B_llegada_tecnico >= 0) else False
 
             if cantidad_tiempo > 0:
                 if minuto_desde >= 0:
@@ -205,8 +291,8 @@ class App:
                                                            minuto_hasta=minuto_hasta
                                                            )
                                         # Crear la tabla
-
-                                        TablaDatos(datos)
+                                        TablaPandas(datos)
+                                        # TablaDatos(datos)
 
             else:
                 messagebox.showerror("Error", "Ha ingresado algún dato erróneo. Revise de vuelta")

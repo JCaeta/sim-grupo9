@@ -16,4 +16,3 @@ class Empleado:
 
     def get_terminal(self):
         return self.terminal
-

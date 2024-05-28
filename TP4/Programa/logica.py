@@ -90,6 +90,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
     sim.reloj = reloj
     sim.terminales = terminales
     sim.empleados = empleados
+    sim.lista_estado_terminales.append(sim.get_estado_terminales())
 
     tiempos = {
         'llegada_empleado': proxima_llegada_empleado if proxima_llegada_empleado != '-' else float('inf'),
@@ -114,7 +115,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
     sim.proximo_evento = proximo_evento
     simulaciones.append(sim)
 
-    for i in range(1, 50):
+    for i in range(1, 200):
         simulaciones.append(Simulacion())
         reloj = menor_tiempo
         evento = simulaciones[i - 1].proximo_evento
@@ -218,6 +219,8 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                 i - 1].acumulador_empleados_que_salen_temporalmente
             simulaciones[i].acumulador_empleados_que_pasaron_por_el_sistema = simulaciones[
                 i - 1].acumulador_empleados_que_pasaron_por_el_sistema
+            simulaciones[i].lista_estado_terminales.append(simulaciones[i].get_estado_terminales())
+            simulaciones[i].lista_empleados.append(simulaciones[i].empleados)
 
         # Si llega el técnico
         elif evento.startswith("llegada_tecnico"):
@@ -275,9 +278,17 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
             simulaciones[i].acumulador_empleados_que_salen_temporalmente = simulaciones[
                 i - 1].acumulador_empleados_que_salen_temporalmente
 
+            simulaciones[i].lista_estado_terminales.append(simulaciones[i].get_estado_terminales())
+
         # Si se termina de registrar una huella en una terminal
         elif evento.startswith("fin_registro_huella"):
             numero_terminal_fin = evento[-2]
+
+            # Destruir el empleado que terminó de registrar su huella
+            numero_empleado_a_eliminar = simulaciones[i].buscar_empleado(int(numero_terminal_fin))
+
+            numero_empleado_a_eliminar = numero_empleado_a_eliminar.get_numero()
+            simulaciones[i].eliminar_empleado(numero_empleado_a_eliminar)
 
             # Si tenemos algun empleado en cola esperando
             if simulaciones[i - 1].get_cola() > 0:
@@ -304,6 +315,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                                                                      indice_empleado].get_minuto_entrada_cola(), 2)
 
                 simulaciones[i].empleados[indice_empleado].estado = estado_empleado
+                simulaciones[i].empleados[indice_empleado].numero = num_empleado
                 simulaciones[i].empleados[indice_empleado].minuto_entrada_cola = ""
                 simulaciones[i].empleados[indice_empleado].terminal = int(numero_terminal_fin)
 
@@ -385,12 +397,8 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
             simulaciones[i].acumulador_empleados_que_pasaron_por_el_sistema = acumulador_empleados_que_pasan_por_sistema
             simulaciones[i].proxima_llegada_empleado = simulaciones[i - 1].proxima_llegada_empleado
             simulaciones[i].proxima_llegada_tecnico = simulaciones[i - 1].proxima_llegada_tecnico
-
-            # Destruir el empleado que terminó de registrar su huella
-            numero_empleado_a_eliminar = simulaciones[i].buscar_empleado(int(numero_terminal_fin))
-
-            numero_empleado_a_eliminar = numero_empleado_a_eliminar.get_numero()
-            simulaciones[i].eliminar_empleado(numero_empleado_a_eliminar)
+            simulaciones[i].lista_estado_terminales.append(simulaciones[i].get_estado_terminales())
+            simulaciones[i].lista_empleados.append(simulaciones[i].empleados)
 
         # Si el tecnico termina de hacer mantenimiento a una terminal
         elif evento.startswith("fin_mantenimiento_terminal"):
@@ -496,6 +504,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                 i - 1].acumulador_empleados_que_pasaron_por_el_sistema
             simulaciones[i].acumulador_empleados_que_salen_temporalmente = simulaciones[
                 i - 1].acumulador_empleados_que_salen_temporalmente
+            simulaciones[i].lista_estado_terminales.append(simulaciones[i].get_estado_terminales())
 
         t = {
             'llegada_empleado': simulaciones[i].proxima_llegada_empleado if simulaciones[
@@ -548,6 +557,31 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
             proximo_evento += '(' + numero_terminal + ')'
 
         simulaciones[i].proximo_evento = proximo_evento
+        # print(simulaciones[i].imprimir_columnas(i))
 
     return simulaciones
+
+
+minuto_A_fin_registro_huella = 5
+minuto_B_fin_registro_huella = 8
+hora_A_llegada_tecnico = 1
+minuto_B_llegada_tecnico = 3
+minuto_A_fin_mantenimiento_terminal = 3
+minuto_B_fin_mantenimiento_terminal = 10
+media_llegada_empleado = 2
+cantidad_tiempo = 1
+minuto_desde = 1
+minuto_hasta = 2
+
+datos = simulacion(minutoARegistroHuella=minuto_A_fin_registro_huella,
+                   minutoBRegistroHuella=minuto_B_fin_registro_huella,
+                   mediaLlegadaEmpleado=media_llegada_empleado,
+                   horaALlegadaTecnico=hora_A_llegada_tecnico,
+                   minutoBLlegadaTecnico=minuto_B_llegada_tecnico,
+                   minutoAMantenimientoTerminal=minuto_A_fin_mantenimiento_terminal,
+                   minutoBMantenimientoTerminal=minuto_B_fin_mantenimiento_terminal,
+                   cantidad_tiempo=cantidad_tiempo,
+                   minuto_desde=minuto_desde,
+                   minuto_hasta=minuto_hasta
+                   )
 

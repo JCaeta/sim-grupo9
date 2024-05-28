@@ -1,2 +1,3 @@
-- Terminar de hacer lógica
-- Ver cómo agregar el estado de las 4 terminales y a los empleados en la tabla
+- Ver como agregar los empleados en la tabla (columnas dinamicas)
+- Ver como cambiar el estado de la columna "Mantenimiento T (X)" cuando el tecnico termina de hacer el ultimo mantenimiento
+- Una vez terminado, ver lo de los parametros iniciales (tiempo, desde, hasta) y verificar variando mas parametros
