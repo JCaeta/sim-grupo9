@@ -6,25 +6,48 @@ import pandas as pd
 from tksheet import Sheet
 
 
+class VentanaDatosFinales:
+    def __init__(self, ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj):
+        self.ventana = tk.Tk()
+        self.ventana.title("Tabla de Simulación")
+        self.ventana.title("TP Nº4 - SIMULACIÓN - 4K3 - UTN FRC - GRUPO 9")
+        self.ventana.geometry("700x100")
+        self.ventana.configure(bg="#f3f3d1")
+
+        self.porcentaje_empleados_que_se_van_temporalmente = str(round(float(ac_emp_salen * 100 / ac_emp_pasaron), 2)) + ' %'
+        self.tiempo_promedio_espera = str(round(float(ac_tiempo_espera / reloj), 2)) + ' minutos'
+
+        self.label_dato1 = tk.Label(self.ventana,
+                                    text=f"Porcentaje de empleados que se van temporalmente para volver mas tarde: "
+                                         f"{self.porcentaje_empleados_que_se_van_temporalmente}",
+                                    font=("Helvetica", 12, "bold"),
+                                    bg='#f3f3d1')
+
+        self.label_dato1.place(x=30, y=30)
+
+        self.label_dato2 = tk.Label(self.ventana,
+                                    text=f"Tiempo promedio de espera: "
+                                         f"{self.tiempo_promedio_espera}",
+                                    font=("Helvetica", 12, "bold"),
+                                    bg='#f3f3d1')
+        self.label_dato2.place(x=30, y=60)
+
+
 class TablaPandas:
-    def __init__(self, simulaciones):
+    def __init__(self, simulaciones, ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj):
         self.datos = [sim.to_dict() for sim in simulaciones]
-        # Convertir la instancia de Simulacion a un diccionario y luego a un DataFrame
+
         df = pd.DataFrame(self.datos)
 
-        # Crear la ventana principal
         root = tk.Tk()
         root.title("Tabla de Simulación")
 
-        # Crear el widget Sheet
         sheet = Sheet(root,
                       data=df.values.tolist(),  # Convertir el DataFrame a una lista de listas
                       headers=list(df.columns),  # Usar los nombres de las columnas del DataFrame como encabezados
                       width=1000,
                       height=400,
                       column_width=200)
-
-
 
         sheet.enable_bindings("single_select",
                               "row_select",
@@ -44,6 +67,8 @@ class TablaPandas:
         # Empaquetar el widget Sheet
         sheet.pack(expand=True, fill='both')
 
+        VentanaDatosFinales(ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj)
+
 
 class App:
     def __init__(self):
@@ -61,15 +86,16 @@ class App:
         self.entry_cantidad_tiempo = tk.Entry(font=("Helvetica", 12), width=10)
         self.entry_cantidad_tiempo.place(x=65, y=50)
 
-        self.label_minuto_desde = tk.Label(text="Minuto desde (i)", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
-        self.label_minuto_desde.place(x=50, y=80)
-        self.entry_minuto_desde = tk.Entry(font=("Helvetica", 12), width=10)
-        self.entry_minuto_desde.place(x=65, y=110)
+        self.label_cantidad_iteraciones_a_mostrar = tk.Label(text="Cant. Iteraciones a mostrar (i)",
+                                                             font=("Helvetica", 14, "bold"), bg='#f3f3d1')
+        self.label_cantidad_iteraciones_a_mostrar.place(x=10, y=80)
+        self.entry_cantidad_iteraciones_a_mostrar = tk.Entry(font=("Helvetica", 12), width=10)
+        self.entry_cantidad_iteraciones_a_mostrar.place(x=65, y=110)
 
-        self.label_minuto_hasta = tk.Label(text="Minuto hasta (j)", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
-        self.label_minuto_hasta.place(x=50, y=140)
-        self.entry_minuto_hasta = tk.Entry(font=("Helvetica", 12), width=10)
-        self.entry_minuto_hasta.place(x=65, y=170)
+        self.label_minuto_desde = tk.Label(text="Minuto desde (j)", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
+        self.label_minuto_desde.place(x=50, y=140)
+        self.entry_minuto_desde = tk.Entry(font=("Helvetica", 12), width=10)
+        self.entry_minuto_desde.place(x=65, y=170)
 
         # MEDIO DE LA VENTANA #
         self.label_evento_llegada_empleado = tk.Label(text="Evento llegada_empleado", font=("Helvetica", 14, "bold"),
@@ -124,67 +150,50 @@ class App:
         self.button.place(x=360, y=250, width=300, height=50)
 
     def validacion_datos(self):
-        minuto_A_fin_registro_huella = 5
-        minuto_B_fin_registro_huella = 8
-        hora_A_llegada_tecnico = 1
-        minuto_B_llegada_tecnico = 3
-        minuto_A_fin_mantenimiento_terminal = 3
-        minuto_B_fin_mantenimiento_terminal = 10
-        media_llegada_empleado = 2
-        cantidad_tiempo = 1
-        minuto_desde = 1
-        minuto_hasta = 2
-
-        # PRUEBAS SIN INGRESO DE DATOS POR INTERFAZ #
-        datos = simulacion(minutoARegistroHuella=minuto_A_fin_registro_huella,
-                           minutoBRegistroHuella=minuto_B_fin_registro_huella,
-                           mediaLlegadaEmpleado=media_llegada_empleado,
-                           horaALlegadaTecnico=hora_A_llegada_tecnico,
-                           minutoBLlegadaTecnico=minuto_B_llegada_tecnico,
-                           minutoAMantenimientoTerminal=minuto_A_fin_mantenimiento_terminal,
-                           minutoBMantenimientoTerminal=minuto_B_fin_mantenimiento_terminal,
-                           cantidad_tiempo=cantidad_tiempo,
-                           minuto_desde=minuto_desde,
-                           minuto_hasta=minuto_hasta
-                           )
-        # Crear la tabla
-        TablaPandas(datos)
-
         try:
-            '''cantidad_tiempo = float(self.entry_cantidad_tiempo.get())
-            minuto_desde = float(self.entry_minuto_desde.get())
-            minuto_hasta = float(self.entry_minuto_hasta.get())
+            cantidad_tiempo = float(self.entry_cantidad_tiempo.get())
+            cantidad_iteraciones_a_mostrar = int(self.entry_cantidad_iteraciones_a_mostrar.get())
+            minuto_desde = int(self.entry_minuto_desde.get())
             media_llegada_empleado = float(self.entry_media_evento_llegada_empleado.get())
             hora_A_llegada_tecnico = float(self.entry_hora_A_llegada_tecnico.get())
             minuto_B_llegada_tecnico = float(self.entry_minuto_B_llegada_tecnico.get())
             minuto_A_fin_registro_huella = float(self.entry_minuto_A_fin_registro_huella.get())
             minuto_B_fin_registro_huella = float(self.entry_minuto_B_fin_registro_huella.get())
             minuto_A_fin_mantenimiento_terminal = float(self.entry_minuto_A_fin_mantenimiento_terminal.get())
-            minuto_B_fin_mantenimiento_terminal = float(self.entry_minuto_B_fin_mantenimiento_terminal.get())'''
-
-
+            minuto_B_fin_mantenimiento_terminal = float(self.entry_minuto_B_fin_mantenimiento_terminal.get())
 
             minuto_B_es_correcto = True if (hora_A_llegada_tecnico * 60 - minuto_B_llegada_tecnico >= 0) else False
 
-            if cantidad_tiempo > 0:
-                if minuto_desde >= 0:
-                    if minuto_hasta > 0 and minuto_hasta > minuto_desde:
-                        if media_llegada_empleado > 0:
-                            if hora_A_llegada_tecnico >= 0 and minuto_B_es_correcto:
-                                if minuto_A_fin_registro_huella >= 0 and minuto_B_fin_registro_huella >= 0 and minuto_B_fin_registro_huella > minuto_A_fin_registro_huella:
-                                    if minuto_A_fin_mantenimiento_terminal >= 0 and minuto_B_fin_mantenimiento_terminal >= 0 and minuto_B_fin_mantenimiento_terminal > minuto_A_fin_mantenimiento_terminal:
-                                        # Llamar a Simulacion
-                                        '''# ESTO ES PARA PROBAR CON LA INTERFAZ
-                                        datos = simulacion(minutoARegistroHuella=minuto_A_fin_registro_huella,
-                                                           minutoBRegistroHuella=minuto_B_fin_registro_huella,
-                                                           mediaLlegadaEmpleado=media_llegada_empleado,
-                                                           horaALlegadaTecnico=hora_A_llegada_tecnico,
-                                                           minutoBLlegadaTecnico=minuto_B_llegada_tecnico,
-                                                           minutoAMantenimientoTerminal=minuto_A_fin_mantenimiento_terminal,
-                                                           minutoBMantenimientoTerminal=minuto_B_fin_mantenimiento_terminal,
-                                                           )'''
-                                        pass
+            if cantidad_tiempo > 0 and(cantidad_iteraciones_a_mostrar >= 0 or cantidad_iteraciones_a_mostrar > 100000) and (minuto_desde >= 0):
+                if (media_llegada_empleado > 0):
+                    if (hora_A_llegada_tecnico >= 0 and minuto_B_es_correcto):
+                        if (minuto_A_fin_registro_huella >= 0 and minuto_B_fin_registro_huella >= 0 and minuto_B_fin_registro_huella > minuto_A_fin_registro_huella):
+                            if (minuto_A_fin_mantenimiento_terminal >= 0 and minuto_B_fin_mantenimiento_terminal >= 0 and minuto_B_fin_mantenimiento_terminal > minuto_A_fin_mantenimiento_terminal):
+                                datos, ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj = simulacion(
+                                    minutoARegistroHuella=minuto_A_fin_registro_huella,
+                                    minutoBRegistroHuella=minuto_B_fin_registro_huella,
+                                    mediaLlegadaEmpleado=media_llegada_empleado,
+                                    horaALlegadaTecnico=hora_A_llegada_tecnico,
+                                    minutoBLlegadaTecnico=minuto_B_llegada_tecnico,
+                                    minutoAMantenimientoTerminal=minuto_A_fin_mantenimiento_terminal,
+                                    minutoBMantenimientoTerminal=minuto_B_fin_mantenimiento_terminal,
+                                    cantidad_tiempo=cantidad_tiempo,
+                                    cantidad_datos_a_mostrar=cantidad_iteraciones_a_mostrar,
+                                    minuto_desde=minuto_desde)
+                                TablaPandas(datos, ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj)
 
+                            else:
+                                messagebox.showerror("Error", "Ha ingresado algún dato erróneo. Revise de vuelta")
+                                return
+                        else:
+                            messagebox.showerror("Error", "Ha ingresado algún dato erróneo. Revise de vuelta")
+                            return
+                    else:
+                        messagebox.showerror("Error", "Ha ingresado algún dato erróneo. Revise de vuelta")
+                        return
+                else:
+                    messagebox.showerror("Error", "Ha ingresado algún dato erróneo. Revise de vuelta")
+                    return
             else:
                 messagebox.showerror("Error", "Ha ingresado algún dato erróneo. Revise de vuelta")
                 return

@@ -58,8 +58,7 @@ class Simulacion:
                 f'{self.acumulador_empleados_que_pasaron_por_el_sistema}\nTerminales\n\tEstado T1: '
                 f'{estado_terminales[0]}\n\tEstado T2: {estado_terminales[1]}\n\tEstado T3: {estado_terminales[2]}\n\t'
                 f'Estado T4: {estado_terminales[3]}\n\tCola: {self.get_cola()}\nTecnico'
-                f'{self.get_info_tecnico()}\n'
-                f'Empleado{self.get_info_empleados()}\n{'-'*40}')
+                f'{self.get_info_tecnico()}\n')
 
     def get_reloj(self):
         return self.reloj

@@ -1,1 +1,0 @@
-- Ver lo de los parametros iniciales (tiempo, desde, hasta) y verificar variando mas parametros
