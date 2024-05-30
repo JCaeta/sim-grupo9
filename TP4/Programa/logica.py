@@ -279,6 +279,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                 i - 1].acumulador_empleados_que_salen_temporalmente
 
             simulaciones[i].lista_estado_terminales.append(simulaciones[i].get_estado_terminales())
+            simulaciones[i].actualizar_info_empleados()
 
         # Si se termina de registrar una huella en una terminal
         elif evento.startswith("fin_registro_huella"):
@@ -444,6 +445,10 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                                                                               random=simulaciones[i].rnd_llegada_tecnico)
 
                 simulaciones[i].proxima_llegada_tecnico = round(simulaciones[i].reloj + simulaciones[i].tiempo_en_llegar_tecnico, 2)
+                simulaciones[i-1].mantenimiento_t1 = "SI"
+                simulaciones[i-1].mantenimiento_t2 = "SI"
+                simulaciones[i-1].mantenimiento_t3 = "SI"
+                simulaciones[i-1].mantenimiento_t4 = "SI"
                 simulaciones[i].mantenimiento_t1 = ""
                 simulaciones[i].mantenimiento_t2 = ""
                 simulaciones[i].mantenimiento_t3 = ""
@@ -505,6 +510,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
             simulaciones[i].acumulador_empleados_que_salen_temporalmente = simulaciones[
                 i - 1].acumulador_empleados_que_salen_temporalmente
             simulaciones[i].lista_estado_terminales.append(simulaciones[i].get_estado_terminales())
+            simulaciones[i].actualizar_info_empleados()
 
         t = {
             'llegada_empleado': simulaciones[i].proxima_llegada_empleado if simulaciones[
