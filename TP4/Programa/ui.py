@@ -38,7 +38,7 @@ class TablaPandas:
 
         df = pd.DataFrame(self.datos)
 
-        df = df.iloc[:, :34] # No incluir columnas de empleados
+        # df = df.iloc[:, :34] # No incluir columnas de empleados
 
         root = tk.Tk()
         root.title("Tabla de Simulación")
