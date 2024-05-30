@@ -36,30 +36,51 @@ class Simulacion:
         self.lista_empleados = []
         self.empleados = []
 
+    # def imprimir_columnas(self, iteracion):
+    #     estado_terminales = self.get_estado_terminales()
+    #     return (f'{'-'*10} Iteracion nº: {iteracion} {'-'*10}\nEvento: {self.get_evento()}\nProximo evento: '
+    #             f'{self.get_proximo_evento()}\nReloj: {self.reloj}\nLlegadaEmpleado \n\tRND: {
+    #             self.rnd_llegada_empleado}\n\tTiempo entre llegadas: {
+    #             self.tiempo_entre_llegadas_empleado}\n\tProxima llegada empleado: {self.proxima_llegada_empleado}\n'
+    #             f'LlegadaTecnico \n\tRND: {self.rnd_llegada_tecnico}\n\tTiempo en llegar: '
+    #             f'{self.tiempo_en_llegar_tecnico}\n\tProxima llegada tecnico: {self.proxima_llegada_tecnico}\n'
+    #             f'FinRegistroHuella \n\tRND: {self.rnd_fin_registro_huella}\n\tTiempo registro huella: '
+    #             f'{self.tiempo_registro_huella}\n\tFin Registro Huella T1: {self.fin_registro_huella_t1}\n\t'
+    #             f'Fin Registro Huella T2: {self.fin_registro_huella_t2}\n\t'
+    #             f'Fin Registro Huella T3: {self.fin_registro_huella_t3}\n\tFin Registro Huella T4: '
+    #             f'{self.fin_registro_huella_t4}\nFinMantenimientoTerminal\n\tRND: '
+    #             f'{self.rnd_fin_mantenimiento_terminal}\n\tTiempo Mantenimiento Terminal: '
+    #             f'{self.tiempo_mantenimiento_terminal}\n\tFin Mantenimiento T1: {self.fin_mantenimiento_terminal1}\n\t'
+    #             f'Fin Mantenimiento T2: {self.fin_mantenimiento_terminal2}\n\tFin Mantenimiento T3: '
+    #             f'{self.fin_mantenimiento_terminal3}\n\tFin Mantenimiento T4: {self.fin_mantenimiento_terminal4}\n'
+    #             f'AC Tiempo Espera: {self.acumulador_tiempo_espera}\nAC Empleados que salen temporalmente: {
+    #             self.acumulador_empleados_que_salen_temporalmente}\nAC Empleados que pasaron por el sistema: '
+    #             f'{self.acumulador_empleados_que_pasaron_por_el_sistema}\nTerminales\n\tEstado T1: '
+    #             f'{estado_terminales[0]}\n\tEstado T2: {estado_terminales[1]}\n\tEstado T3: {estado_terminales[2]}\n\t'
+    #             f'Estado T4: {estado_terminales[3]}\n\tCola: {self.get_cola()}\nTecnico'
+    #             f'{self.get_info_tecnico()}\n')
+    
     def imprimir_columnas(self, iteracion):
         estado_terminales = self.get_estado_terminales()
-        return (f'{'-'*10} Iteracion nº: {iteracion} {'-'*10}\nEvento: {self.get_evento()}\nProximo evento: '
-                f'{self.get_proximo_evento()}\nReloj: {self.reloj}\nLlegadaEmpleado \n\tRND: {
-                self.rnd_llegada_empleado}\n\tTiempo entre llegadas: {
-                self.tiempo_entre_llegadas_empleado}\n\tProxima llegada empleado: {self.proxima_llegada_empleado}\n'
-                f'LlegadaTecnico \n\tRND: {self.rnd_llegada_tecnico}\n\tTiempo en llegar: '
-                f'{self.tiempo_en_llegar_tecnico}\n\tProxima llegada tecnico: {self.proxima_llegada_tecnico}\n'
-                f'FinRegistroHuella \n\tRND: {self.rnd_fin_registro_huella}\n\tTiempo registro huella: '
-                f'{self.tiempo_registro_huella}\n\tFin Registro Huella T1: {self.fin_registro_huella_t1}\n\t'
-                f'Fin Registro Huella T2: {self.fin_registro_huella_t2}\n\t'
-                f'Fin Registro Huella T3: {self.fin_registro_huella_t3}\n\tFin Registro Huella T4: '
-                f'{self.fin_registro_huella_t4}\nFinMantenimientoTerminal\n\tRND: '
-                f'{self.rnd_fin_mantenimiento_terminal}\n\tTiempo Mantenimiento Terminal: '
-                f'{self.tiempo_mantenimiento_terminal}\n\tFin Mantenimiento T1: {self.fin_mantenimiento_terminal1}\n\t'
-                f'Fin Mantenimiento T2: {self.fin_mantenimiento_terminal2}\n\tFin Mantenimiento T3: '
-                f'{self.fin_mantenimiento_terminal3}\n\tFin Mantenimiento T4: {self.fin_mantenimiento_terminal4}\n'
-                f'AC Tiempo Espera: {self.acumulador_tiempo_espera}\nAC Empleados que salen temporalmente: {
-                self.acumulador_empleados_que_salen_temporalmente}\nAC Empleados que pasaron por el sistema: '
-                f'{self.acumulador_empleados_que_pasaron_por_el_sistema}\nTerminales\n\tEstado T1: '
-                f'{estado_terminales[0]}\n\tEstado T2: {estado_terminales[1]}\n\tEstado T3: {estado_terminales[2]}\n\t'
-                f'Estado T4: {estado_terminales[3]}\n\tCola: {self.get_cola()}\nTecnico'
-                f'{self.get_info_tecnico()}\n')
-
+        return (
+            f"{'-'*10} Iteracion nº: {iteracion} {'-'*10}\n"
+            f"Evento: {self.get_evento()}\n"
+            f"Proximo evento: {self.get_proximo_evento()}\n"
+            f"Reloj: {self.reloj}\n"
+            f"LlegadaEmpleado \n\tRND: {self.rnd_llegada_empleado}\n\tTiempo entre llegadas: {self.tiempo_entre_llegadas_empleado}\n\tProxima llegada empleado: {self.proxima_llegada_empleado}\n"
+            f"LlegadaTecnico \n\tRND: {self.rnd_llegada_tecnico}\n\tTiempo en llegar: {self.tiempo_en_llegar_tecnico}\n\tProxima llegada tecnico: {self.proxima_llegada_tecnico}\n"
+            f"FinRegistroHuella \n\tRND: {self.rnd_fin_registro_huella}\n\tTiempo registro huella: {self.tiempo_registro_huella}\n\tFin Registro Huella T1: {self.fin_registro_huella_t1}\n\t"
+            f"Fin Registro Huella T2: {self.fin_registro_huella_t2}\n\t"
+            f"Fin Registro Huella T3: {self.fin_registro_huella_t3}\n\tFin Registro Huella T4: {self.fin_registro_huella_t4}\n"
+            f"FinMantenimientoTerminal\n\tRND: {self.rnd_fin_mantenimiento_terminal}\n\tTiempo Mantenimiento Terminal: {self.tiempo_mantenimiento_terminal}\n\tFin Mantenimiento T1: {self.fin_mantenimiento_terminal1}\n\t"
+            f"Fin Mantenimiento T2: {self.fin_mantenimiento_terminal2}\n\tFin Mantenimiento T3: {self.fin_mantenimiento_terminal3}\n\tFin Mantenimiento T4: {self.fin_mantenimiento_terminal4}\n"
+            f"AC Tiempo Espera: {self.acumulador_tiempo_espera}\n"
+            f"AC Empleados que salen temporalmente: {self.acumulador_empleados_que_salen_temporalmente}\n"
+            f"AC Empleados que pasaron por el sistema: {self.acumulador_empleados_que_pasaron_por_el_sistema}\n"
+            f"Terminales\n\tEstado T1: {estado_terminales[0]}\n\tEstado T2: {estado_terminales[1]}\n\tEstado T3: {estado_terminales[2]}\n\tEstado T4: {estado_terminales[3]}\n\tCola: {self.get_cola()}\n"
+            f"Tecnico\n{self.get_info_tecnico()}\n"
+        )
+        
     def get_reloj(self):
         return self.reloj
 
@@ -214,5 +235,5 @@ class Simulacion:
 
             simulaciones_dict[columna_estado] = dato_estado
             simulaciones_dict[columna_min_cola] = dato_min_cola
-
+        
         return simulaciones_dict

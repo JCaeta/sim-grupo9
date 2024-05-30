@@ -5,7 +5,6 @@ from logica import simulacion
 import pandas as pd
 from tksheet import Sheet
 
-
 class VentanaDatosFinales:
     def __init__(self, ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj):
         self.ventana = tk.Tk()
@@ -39,6 +38,8 @@ class TablaPandas:
 
         df = pd.DataFrame(self.datos)
 
+        df = df.iloc[:, :34] # No incluir columnas de empleados
+
         root = tk.Tk()
         root.title("Tabla de Simulación")
 
@@ -60,7 +61,6 @@ class TablaPandas:
                               "paste",
                               "delete",
                               "undo")
-
         for _ in df.columns:
             sheet.align(align="center")
 
