@@ -7,9 +7,8 @@ from tksheet import Sheet
 
 
 class TablaPandas:
-    def __init__(self, datos):
-        self.datos = [sim.to_dict() for sim in datos]
-
+    def __init__(self, simulaciones):
+        self.datos = [sim.to_dict() for sim in simulaciones]
         # Convertir la instancia de Simulacion a un diccionario y luego a un DataFrame
         df = pd.DataFrame(self.datos)
 
@@ -25,41 +24,7 @@ class TablaPandas:
                       height=400,
                       column_width=200)
 
-        column_widths = {
-            'Evento': 200,
-            'Proximo Evento': 200,
-            'Reloj': 20,
-            'RND Llegada Empleado': 100,
-            'Tiempo entre Llegadas Empleado': 190,
-            'Proxima Llegada Empleado': 130,
-            'RND Llegada Tecnico': 90,
-            'Tiempo en Llegar Tecnico': 130,
-            'Proxima Llegada Tecnico': 130,
-            'RND Fin Registro Huella': 130,
-            'Tiempo Registro Huella': 130,
-            'Fin Registro Huella T1': 130,
-            'Fin Registro Huella T2': 130,
-            'Fin Registro Huella T3': 130,
-            'Fin Registro Huella T4': 130,
-            'Cola': 20,
-            'RND Fin Mantenim. Terminal': 180,
-            'Tiempo Mantenim. Terminal': 180,
-            'Fin Mantenim. T1': 130,
-            'Fin Mantenim. T2': 130,
-            'Fin Mantenim. T3': 130,
-            'Fin Mantenim. T4': 130,
-            'AC Tiempo Espera': 90,
-            'AC Emp. que Salen Temporalmente': 200,
-            'AC Emp. que Pasaron por Sistema': 200,
-            'Estado Tecnico': 70,
-            'Mantenim. T1': 70,
-            'Mantenim. T2': 70,
-            'Mantenim. T3': 70,
-            'Mantenim. T4': 70
-        }
 
-        for col, width in column_widths.items():
-            sheet.column_width(column=col, width=width)
 
         sheet.enable_bindings("single_select",
                               "row_select",
@@ -78,83 +43,6 @@ class TablaPandas:
 
         # Empaquetar el widget Sheet
         sheet.pack(expand=True, fill='both')
-
-
-class TablaDatos:
-    def __init__(self, datos):
-        self.ventana = tk.Tk()
-        self.ventana.title("TP Nº4 - SIMULACIÓN - 4K3 - UTN FRC - GRUPO 9")
-        self.ventana.geometry("1600x700")
-        self.ventana.configure(bg="#f3f3d1")
-        self.datos = datos
-
-        self.treeview = ttk.Treeview(self.ventana, columns=(
-            "evento", "proximo_evento", "reloj", "rnd_llegada_empleado", "tiempo_entre_llegadas_empleado",
-            "proxima_llegada_empleado", "rnd_llegada_tecnico", "tiempo_en_llegar_tecnico", "proxima_llegada_tecnico",
-            "rnd_fin_registro_huella", "tiempo_registro_huella", "fin_registro_huella_t1", "fin_registro_huella_t2",
-            "fin_registro_huella_t3", "fin_registro_huella_t4", "cola", "rnd_fin_mantenimiento_terminal",
-            "tiempo_mantenimiento_terminal", "fin_mantenimiento_t1", "fin_mantenimiento_t2", "fin_mantenimiento_t3",
-            "fin_mantenimiento_t4", "acumulador_tiempo_espera", "acumulador_empleados_que_salen",
-            "acumulador_empleados_que_pasaron", "estado_tecnico", "mant_t1", "mant_t2", "mant_t3", "mant_t4")
-                                     , show="headings")
-
-        self.treeview.heading("evento", text="Evento")
-        self.treeview.heading("proximo_evento", text="Próximo Evento")
-        self.treeview.heading("reloj", text="Reloj")
-        self.treeview.heading("rnd_llegada_empleado", text="RND Llegada Emp.")
-        self.treeview.heading("tiempo_entre_llegadas_empleado", text="Tiempo entre llegadas Emp.")
-        self.treeview.heading("proxima_llegada_empleado", text="Prox. llegada Emp.")
-        self.treeview.heading("rnd_llegada_tecnico", text="RND Llegada Tec.")
-        self.treeview.heading("tiempo_en_llegar_tecnico", text="Tiempo llegada Tec.")
-        self.treeview.heading("proxima_llegada_tecnico", text="Prox. llegada Tec.")
-        self.treeview.heading("rnd_fin_registro_huella", text="RND Tiempo Reg.")
-        self.treeview.heading("tiempo_registro_huella", text="Tiempo Registro Huella")
-        self.treeview.heading("fin_registro_huella_t1", text="Fin Registro T1")
-        self.treeview.heading("fin_registro_huella_t2", text="Fin Registro T2")
-        self.treeview.heading("fin_registro_huella_t3", text="Fin Registro T3")
-        self.treeview.heading("fin_registro_huella_t4", text="Fin Registro T4")
-        self.treeview.heading("cola", text="Cola")
-        self.treeview.heading("rnd_fin_mantenimiento_terminal", text="RND Tiempo Mant.")
-        self.treeview.heading("tiempo_mantenimiento_terminal", text="Tiempo Mant.")
-        self.treeview.heading("fin_mantenimiento_t1", text="Fin Mant. T1")
-        self.treeview.heading("fin_mantenimiento_t2", text="Fin Mant. T2")
-        self.treeview.heading("fin_mantenimiento_t3", text="Fin Mant. T3")
-        self.treeview.heading("fin_mantenimiento_t4", text="Fin Mant. T4")
-        self.treeview.heading("acumulador_tiempo_espera", text="AC Tiempo Espera")
-        self.treeview.heading("acumulador_empleados_que_salen", text="AC Empleados que salen")
-        self.treeview.heading("acumulador_empleados_que_pasaron", text="AC Empleados que pasaron")
-        self.treeview.heading("estado_tecnico", text="Estado Tec.")
-        self.treeview.heading("mant_t1", text="Mant. T1")
-        self.treeview.heading("mant_t2", text="Mant. T2")
-        self.treeview.heading("mant_t3", text="Mant. T3")
-        self.treeview.heading("mant_t4", text="Mant. T4")
-
-        for column in self.treeview["columns"]:
-            self.treeview.column(column, width=175, anchor="center")
-
-        self.treeview.pack(expand=True, fill="both")
-
-        xscrollbar = ttk.Scrollbar(self.ventana, orient="horizontal", command=self.treeview.xview)
-        xscrollbar.pack(side="bottom", fill="x")
-        yscrollbar = tk.Scrollbar(self.treeview, orient="vertical", command=self.treeview.yview)
-        yscrollbar.pack(side="right", fill="y")
-
-        self.treeview.configure(xscrollcommand=xscrollbar.set)
-        self.treeview.configure(yscrollcommand=yscrollbar.set)
-
-        for i, obj in enumerate(self.datos, start=0):
-            self.treeview.insert("", "end", text=str(i), values=(
-                obj.evento, obj.proximo_evento, obj.reloj, obj.rnd_llegada_empleado,
-                obj.tiempo_entre_llegadas_empleado, obj.proxima_llegada_empleado,
-                obj.rnd_llegada_tecnico, obj.tiempo_en_llegar_tecnico, obj.proxima_llegada_tecnico,
-                obj.rnd_fin_registro_huella, obj.tiempo_registro_huella, obj.fin_registro_huella_t1,
-                obj.fin_registro_huella_t2, obj.fin_registro_huella_t3, obj.fin_registro_huella_t4,
-                obj.cola, obj.rnd_fin_mantenimiento_terminal, obj.tiempo_mantenimiento_terminal,
-                obj.fin_mantenimiento_terminal1, obj.fin_mantenimiento_terminal2, obj.fin_mantenimiento_terminal3,
-                obj.fin_mantenimiento_terminal4, obj.acumulador_tiempo_espera,
-                obj.acumulador_empleados_que_salen_temporalmente,
-                obj.acumulador_empleados_que_pasaron_por_el_sistema, obj.estado_tecnico, obj.mantenimiento_t1,
-                obj.mantenimiento_t2, obj.mantenimiento_t3, obj.mantenimiento_t4))
 
 
 class App:
@@ -236,6 +124,32 @@ class App:
         self.button.place(x=360, y=250, width=300, height=50)
 
     def validacion_datos(self):
+        minuto_A_fin_registro_huella = 5
+        minuto_B_fin_registro_huella = 8
+        hora_A_llegada_tecnico = 1
+        minuto_B_llegada_tecnico = 3
+        minuto_A_fin_mantenimiento_terminal = 3
+        minuto_B_fin_mantenimiento_terminal = 10
+        media_llegada_empleado = 2
+        cantidad_tiempo = 1
+        minuto_desde = 1
+        minuto_hasta = 2
+
+        # PRUEBAS SIN INGRESO DE DATOS POR INTERFAZ #
+        datos = simulacion(minutoARegistroHuella=minuto_A_fin_registro_huella,
+                           minutoBRegistroHuella=minuto_B_fin_registro_huella,
+                           mediaLlegadaEmpleado=media_llegada_empleado,
+                           horaALlegadaTecnico=hora_A_llegada_tecnico,
+                           minutoBLlegadaTecnico=minuto_B_llegada_tecnico,
+                           minutoAMantenimientoTerminal=minuto_A_fin_mantenimiento_terminal,
+                           minutoBMantenimientoTerminal=minuto_B_fin_mantenimiento_terminal,
+                           cantidad_tiempo=cantidad_tiempo,
+                           minuto_desde=minuto_desde,
+                           minuto_hasta=minuto_hasta
+                           )
+        # Crear la tabla
+        TablaPandas(datos)
+
         try:
             '''cantidad_tiempo = float(self.entry_cantidad_tiempo.get())
             minuto_desde = float(self.entry_minuto_desde.get())
@@ -248,16 +162,7 @@ class App:
             minuto_A_fin_mantenimiento_terminal = float(self.entry_minuto_A_fin_mantenimiento_terminal.get())
             minuto_B_fin_mantenimiento_terminal = float(self.entry_minuto_B_fin_mantenimiento_terminal.get())'''
 
-            minuto_A_fin_registro_huella = 5
-            minuto_B_fin_registro_huella = 8
-            hora_A_llegada_tecnico = 1
-            minuto_B_llegada_tecnico = 3
-            minuto_A_fin_mantenimiento_terminal = 3
-            minuto_B_fin_mantenimiento_terminal = 10
-            media_llegada_empleado = 2
-            cantidad_tiempo = 1
-            minuto_desde = 1
-            minuto_hasta = 2
+
 
             minuto_B_es_correcto = True if (hora_A_llegada_tecnico * 60 - minuto_B_llegada_tecnico >= 0) else False
 
@@ -278,21 +183,7 @@ class App:
                                                            minutoAMantenimientoTerminal=minuto_A_fin_mantenimiento_terminal,
                                                            minutoBMantenimientoTerminal=minuto_B_fin_mantenimiento_terminal,
                                                            )'''
-                                        # PRUEBAS SIN INGRESO DE DATOS POR INTERFAZ #
-                                        datos = simulacion(minutoARegistroHuella=minuto_A_fin_registro_huella,
-                                                           minutoBRegistroHuella=minuto_B_fin_registro_huella,
-                                                           mediaLlegadaEmpleado=media_llegada_empleado,
-                                                           horaALlegadaTecnico=hora_A_llegada_tecnico,
-                                                           minutoBLlegadaTecnico=minuto_B_llegada_tecnico,
-                                                           minutoAMantenimientoTerminal=minuto_A_fin_mantenimiento_terminal,
-                                                           minutoBMantenimientoTerminal=minuto_B_fin_mantenimiento_terminal,
-                                                           cantidad_tiempo=cantidad_tiempo,
-                                                           minuto_desde=minuto_desde,
-                                                           minuto_hasta=minuto_hasta
-                                                           )
-                                        # Crear la tabla
-                                        TablaPandas(datos)
-                                        # TablaDatos(datos)
+                                        pass
 
             else:
                 messagebox.showerror("Error", "Ha ingresado algún dato erróneo. Revise de vuelta")

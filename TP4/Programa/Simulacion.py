@@ -100,35 +100,12 @@ class Simulacion:
 
         return info_terminales
 
-    '''def get_info_empleados(self):
-        info = ""
-        for i in range(len(self.empleados)):
-            info += (f'\n\tNº Empleado: {self.empleados[i].get_numero()}\n\t'
-                     f'Estado: {self.empleados[i].get_estado()}\n\t'
-                     f'Minuto que entra en cola: {self.empleados[i].get_minuto_entrada_cola()}\n\t')
-        return info'''
+    def actualizar_info_empleados(self):
+        for i in self.empleados:
+            estado_empleado = i.get_estado()
+            minuto_entrada = i.get_minuto_entrada_cola()
 
-    def get_info_empleados(self):
-        info_empleados = []
-        for i in range(len(self.empleados)):
-            info_empleados.append([self.empleados[i].get_numero(), self.empleados[i].get_estado(), self.empleados[i].get_minuto_entrada_cola()])
-
-        print(info_empleados)
-        return info_empleados
-
-
-    def info_empleados_to_dict(self):
-        info_empleados = []
-        for i in self.lista_empleados:
-            print(i)
-            pass
-            '''info = {
-                'Nº Empleado': self.lista_empleados[k][k].get_numero(),
-                'Estado': self.lista_empleados[k][k].get_estado(),
-                'Min. entrada en cola': self.lista_empleados[k][k].get_minuto_entrada_cola()'
-            }
-            info_empleados.append(info)'''
-        return info_empleados
+            self.lista_empleados.append([estado_empleado, minuto_entrada],)
 
     def buscar_empleado_cola(self):
         empleado = None
@@ -191,6 +168,7 @@ class Simulacion:
 
     def to_dict(self):
         estado_terminales = self.get_info_terminales()
+
         simulaciones_dict = {
             'Evento': self.evento,
             'Proximo Evento': self.proximo_evento,
@@ -225,11 +203,17 @@ class Simulacion:
             'Mantenimiento T1': self.mantenimiento_t1,
             'Mantenimiento T2': self.mantenimiento_t2,
             'Mantenimiento T3': self.mantenimiento_t3,
-            'Mantenimiento T4': self.mantenimiento_t4
+            'Mantenimiento T4': self.mantenimiento_t4,
         }
 
-        # Agregar información de empleados dinámicamente
-        empleado_info = self.info_empleados_to_dict()
+        for i in range(len(self.lista_empleados)):
+            columna_estado = f'Estado Emp. {i+1}'
+            columna_min_cola = f'Min. entrada cola Emp. {i+1}'
 
+            dato_estado = self.lista_empleados[i][0]
+            dato_min_cola = self.lista_empleados[i][1]
+
+            simulaciones_dict[columna_estado] = dato_estado
+            simulaciones_dict[columna_min_cola] = dato_min_cola
 
         return simulaciones_dict

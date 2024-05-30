@@ -1,3 +1,2 @@
-- Ver como agregar los empleados en la tabla (columnas dinamicas)
-- Ver como cambiar el estado de la columna "Mantenimiento T (X)" cuando el tecnico termina de hacer el ultimo mantenimiento
+- Ver como cambiar el estado de la columna "Mantenimiento T (X)" cuando el tecnico termina de hacer el ultimo mantenimiento (opcional)
 - Una vez terminado, ver lo de los parametros iniciales (tiempo, desde, hasta) y verificar variando mas parametros
