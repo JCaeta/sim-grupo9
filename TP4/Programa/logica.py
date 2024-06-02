@@ -118,8 +118,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
     i = 1
 
     while simulaciones[-1].reloj <= cantidad_tiempo:
-        print('i: ', i)
-        print(' ')
+        # print(f'{i}\n')
         if i == 100000:
             break
         else:
@@ -300,8 +299,8 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                 numero_empleado_a_eliminar = numero_empleado_a_eliminar.get_numero()
                 simulaciones[i].eliminar_empleado(numero_empleado_a_eliminar)
 
-                # Si tenemos algun empleado en cola esperando
-                if simulaciones[i - 1].get_cola() > 0:
+                # Si tenemos algun empleado en cola esperando y la terminal está libre
+                if simulaciones[i - 1].get_cola() > 0 and simulaciones[i - 1].terminales[int(numero_terminal_fin)-1].estado not in ["OM", "ORM"]:
                     # Encontrar el siguiente empleado en cola
                     siguiente_empleado = simulaciones[i].buscar_empleado_cola()
                     num_empleado = siguiente_empleado.get_numero()
@@ -422,29 +421,102 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                     simulaciones[i].mantenimiento_t3 = simulaciones[i-1].mantenimiento_t3
                     simulaciones[i].mantenimiento_t4 = simulaciones[i-1].mantenimiento_t4
 
-                elif numero_terminal_arreglada == 2:
+                if numero_terminal_arreglada == 2:
                     simulaciones[i].mantenimiento_t2 = "SI"
                     simulaciones[i].mantenimiento_t1 = simulaciones[i-1].mantenimiento_t1
                     simulaciones[i].mantenimiento_t3 = simulaciones[i-1].mantenimiento_t3
                     simulaciones[i].mantenimiento_t4 = simulaciones[i-1].mantenimiento_t4
 
-                elif numero_terminal_arreglada == 3:
+                if numero_terminal_arreglada == 3:
                     simulaciones[i].mantenimiento_t3 = "SI"
                     simulaciones[i].mantenimiento_t2 = simulaciones[i-1].mantenimiento_t2
                     simulaciones[i].mantenimiento_t1 = simulaciones[i-1].mantenimiento_t1
                     simulaciones[i].mantenimiento_t4 = simulaciones[i-1].mantenimiento_t4
 
-                elif numero_terminal_arreglada == 4:
+                if numero_terminal_arreglada == 4:
                     simulaciones[i].mantenimiento_t4 = "SI"
                     simulaciones[i].mantenimiento_t2 = simulaciones[i-1].mantenimiento_t2
                     simulaciones[i].mantenimiento_t3 = simulaciones[i-1].mantenimiento_t3
                     simulaciones[i].mantenimiento_t1 = simulaciones[i-1].mantenimiento_t1
 
-                if simulaciones[i - 1].terminales[int(numero_terminal_arreglada) - 1].get_estado() == "ORM":
-                    simulaciones[i].terminales[int(numero_terminal_arreglada) - 1].estado = "OR"
+                if simulaciones[i - 1].terminales[numero_terminal_arreglada - 1].get_estado() == "ORM":
+                    simulaciones[i].fin_registro_huella_t1 = simulaciones[i - 1].fin_registro_huella_t1
+                    simulaciones[i].fin_registro_huella_t2 = simulaciones[i - 1].fin_registro_huella_t2
+                    simulaciones[i].fin_registro_huella_t3 = simulaciones[i - 1].fin_registro_huella_t3
+                    simulaciones[i].fin_registro_huella_t4 = simulaciones[i - 1].fin_registro_huella_t4
+                    simulaciones[i].cola = simulaciones[i - 1].cola
+                    simulaciones[i].acumulador_tiempo_espera = simulaciones[i - 1].acumulador_tiempo_espera
+                    simulaciones[i].terminales[numero_terminal_arreglada - 1].estado = "OR"
 
-                elif simulaciones[i - 1].terminales[int(numero_terminal_arreglada) - 1].get_estado() == "OM":
-                    simulaciones[i].terminales[int(numero_terminal_arreglada) - 1].estado = "L"
+                if simulaciones[i - 1].terminales[numero_terminal_arreglada - 1].get_estado() == "OM":
+                    # Fijarse si hay algun empleado en cola
+
+                    if simulaciones[i - 1].get_cola() > 0:
+                        siguiente_empleado = simulaciones[i].buscar_empleado_cola()
+                        num_empleado = siguiente_empleado.get_numero()
+                        indice_empleado = simulaciones[i].buscar_indice_empleado(num_empleado)
+
+                        # Cambiar el estado de ese empleado de EC a HR
+                        estado_empleado = "HR" + '(' + str(numero_terminal_arreglada) + ')'
+
+                        cola_terminales -= 1
+                        simulaciones[i].cola = cola_terminales
+
+                        simulaciones[i].rnd_fin_registro_huella = round(rnd(), 2)
+                        simulaciones[i].tiempo_registro_huella = generador_uniforme(a=dist_registro_huella.get_a(),
+                                                                                    b=dist_registro_huella.get_b(),
+                                                                                    random=simulaciones[
+                                                                                        i].rnd_fin_registro_huella)
+
+                        simulaciones[i].acumulador_tiempo_espera = round(simulaciones[i - 1].acumulador_tiempo_espera +
+                                                                         simulaciones[i].reloj -
+                                                                         simulaciones[i].empleados[
+                                                                             indice_empleado].get_minuto_entrada_cola(),
+                                                                         2)
+
+                        simulaciones[i].empleados[indice_empleado].estado = estado_empleado
+                        simulaciones[i].empleados[indice_empleado].numero = num_empleado
+                        simulaciones[i].empleados[indice_empleado].minuto_entrada_cola = ""
+                        simulaciones[i].empleados[indice_empleado].terminal = numero_terminal_arreglada
+
+                        if numero_terminal_arreglada == 1:
+                            simulaciones[i].fin_registro_huella_t1 = round(
+                                reloj + simulaciones[i].tiempo_registro_huella, 2)
+                            simulaciones[i].fin_registro_huella_t2 = simulaciones[i - 1].fin_registro_huella_t2
+                            simulaciones[i].fin_registro_huella_t3 = simulaciones[i - 1].fin_registro_huella_t3
+                            simulaciones[i].fin_registro_huella_t4 = simulaciones[i - 1].fin_registro_huella_t4
+
+                        if numero_terminal_arreglada == 2:
+                            simulaciones[i].fin_registro_huella_t2 = round(
+                                reloj + simulaciones[i].tiempo_registro_huella, 2)
+                            simulaciones[i].fin_registro_huella_t1 = simulaciones[i - 1].fin_registro_huella_t1
+                            simulaciones[i].fin_registro_huella_t3 = simulaciones[i - 1].fin_registro_huella_t3
+                            simulaciones[i].fin_registro_huella_t4 = simulaciones[i - 1].fin_registro_huella_t4
+
+                        if numero_terminal_arreglada == 3:
+                            simulaciones[i].fin_registro_huella_t3 = round(
+                                reloj + simulaciones[i].tiempo_registro_huella, 2)
+                            simulaciones[i].fin_registro_huella_t2 = simulaciones[i - 1].fin_registro_huella_t2
+                            simulaciones[i].fin_registro_huella_t1 = simulaciones[i - 1].fin_registro_huella_t1
+                            simulaciones[i].fin_registro_huella_t4 = simulaciones[i - 1].fin_registro_huella_t4
+
+                        if numero_terminal_arreglada == 4:
+                            simulaciones[i].fin_registro_huella_t4 = round(
+                                reloj + simulaciones[i].tiempo_registro_huella, 2)
+                            simulaciones[i].fin_registro_huella_t2 = simulaciones[i - 1].fin_registro_huella_t2
+                            simulaciones[i].fin_registro_huella_t3 = simulaciones[i - 1].fin_registro_huella_t3
+                            simulaciones[i].fin_registro_huella_t1 = simulaciones[i - 1].fin_registro_huella_t1
+
+                        simulaciones[i].terminales[numero_terminal_arreglada - 1].estado = "OR"
+
+                    else:
+                        simulaciones[i].fin_registro_huella_t1 = simulaciones[i - 1].fin_registro_huella_t1
+                        simulaciones[i].fin_registro_huella_t2 = simulaciones[i - 1].fin_registro_huella_t2
+                        simulaciones[i].fin_registro_huella_t3 = simulaciones[i - 1].fin_registro_huella_t3
+                        simulaciones[i].fin_registro_huella_t4 = simulaciones[i - 1].fin_registro_huella_t4
+                        simulaciones[i].cola = simulaciones[i - 1].cola
+                        simulaciones[i].acumulador_tiempo_espera = simulaciones[i - 1].acumulador_tiempo_espera
+                        simulaciones[i].terminales[numero_terminal_arreglada - 1].estado = "L"
 
                 terminales_restantes = simulaciones[i].encontrar_terminales_restantes_a_mantener(numero_terminal_arreglada)
 
@@ -491,31 +563,13 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                     if simulaciones[i - 1].terminales[numero_terminal_elegida - 1].get_estado() == "OR":
                         simulaciones[i].terminales[numero_terminal_elegida - 1].estado = "ORM"
 
-                    elif simulaciones[i - 1].terminales[int(numero_terminal_elegida) - 1].get_estado() == "L":
+                    if simulaciones[i - 1].terminales[int(numero_terminal_elegida) - 1].get_estado() == "L":
                         simulaciones[i].terminales[int(numero_terminal_elegida) - 1].estado = "OM"
 
                     simulaciones[i].proxima_llegada_tecnico = simulaciones[i-1].proxima_llegada_tecnico
                     simulaciones[i].estado_tecnico = "RM" + '(' + str(numero_terminal_elegida) + ')'
 
                 simulaciones[i].proxima_llegada_empleado = simulaciones[i - 1].proxima_llegada_empleado
-                simulaciones[i].fin_registro_huella_t1 = simulaciones[i - 1].fin_registro_huella_t1
-                simulaciones[i].fin_registro_huella_t2 = simulaciones[i - 1].fin_registro_huella_t2
-                simulaciones[i].fin_registro_huella_t3 = simulaciones[i - 1].fin_registro_huella_t3
-                simulaciones[i].fin_registro_huella_t4 = simulaciones[i - 1].fin_registro_huella_t4
-                simulaciones[i].cola = simulaciones[i - 1].cola
-                simulaciones[i].acumulador_tiempo_espera = simulaciones[i - 1].acumulador_tiempo_espera
-                simulaciones[i].acumulador_empleados_que_pasaron_por_el_sistema = simulaciones[
-                    i - 1].acumulador_empleados_que_pasaron_por_el_sistema
-                simulaciones[i].acumulador_empleados_que_salen_temporalmente = simulaciones[
-                    i - 1].acumulador_empleados_que_salen_temporalmente
-
-                simulaciones[i].proxima_llegada_empleado = simulaciones[i - 1].proxima_llegada_empleado
-                simulaciones[i].fin_registro_huella_t1 = simulaciones[i - 1].fin_registro_huella_t1
-                simulaciones[i].fin_registro_huella_t2 = simulaciones[i - 1].fin_registro_huella_t2
-                simulaciones[i].fin_registro_huella_t3 = simulaciones[i - 1].fin_registro_huella_t3
-                simulaciones[i].fin_registro_huella_t4 = simulaciones[i - 1].fin_registro_huella_t4
-                simulaciones[i].cola = simulaciones[i - 1].cola
-                simulaciones[i].acumulador_tiempo_espera = simulaciones[i - 1].acumulador_tiempo_espera
                 simulaciones[i].acumulador_empleados_que_pasaron_por_el_sistema = simulaciones[
                     i - 1].acumulador_empleados_que_pasaron_por_el_sistema
                 simulaciones[i].acumulador_empleados_que_salen_temporalmente = simulaciones[
@@ -575,6 +629,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
 
             simulaciones[i].proximo_evento = proximo_evento
             i += 1
+
 
     # Logica para agregar las columnas de las empleados (agrega todos los empleados)
     max_elementos = len(simulaciones[-1].lista_empleados)
