@@ -118,7 +118,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
     i = 1
 
     while simulaciones[-1].reloj <= cantidad_tiempo:
-        # print(f'{i}\n')
+        print(f'{i}\n')
         if i == 100000:
             break
         else:
