@@ -172,16 +172,16 @@ class Simulacion:
     def encontrar_terminales_restantes_a_mantener(self, terminal_arreglada):
         terminales_restantes_a_mantener = []
 
-        if self.mantenimiento_t1 == "NO" and self.terminales[0].get_numero() + 1 != terminal_arreglada:
+        if self.mantenimiento_t1 == "NO" and self.terminales[0].get_numero() != terminal_arreglada:
             terminales_restantes_a_mantener.append(1)
 
-        if self.mantenimiento_t2 == "NO" and self.terminales[1].get_numero() + 1 != terminal_arreglada:
+        if self.mantenimiento_t2 == "NO" and self.terminales[1].get_numero() != terminal_arreglada:
             terminales_restantes_a_mantener.append(2)
 
-        if self.mantenimiento_t3 == "NO" and self.terminales[2].get_numero() + 1 != terminal_arreglada:
+        if self.mantenimiento_t3 == "NO" and self.terminales[2].get_numero() != terminal_arreglada:
             terminales_restantes_a_mantener.append(3)
 
-        if self.mantenimiento_t4 == "NO" and self.terminales[3].get_numero() + 1 != terminal_arreglada:
+        if self.mantenimiento_t4 == "NO" and self.terminales[3].get_numero() != terminal_arreglada:
             terminales_restantes_a_mantener.append(4)
 
         return terminales_restantes_a_mantener
