@@ -35,31 +35,7 @@ class Simulacion:
         self.tecnico = []
         self.lista_empleados = []
         self.empleados = []
-
-    # def imprimir_columnas(self, iteracion):
-    #     estado_terminales = self.get_estado_terminales()
-    #     return (f'{'-'*10} Iteracion nº: {iteracion} {'-'*10}\nEvento: {self.get_evento()}\nProximo evento: '
-    #             f'{self.get_proximo_evento()}\nReloj: {self.reloj}\nLlegadaEmpleado \n\tRND: {
-    #             self.rnd_llegada_empleado}\n\tTiempo entre llegadas: {
-    #             self.tiempo_entre_llegadas_empleado}\n\tProxima llegada empleado: {self.proxima_llegada_empleado}\n'
-    #             f'LlegadaTecnico \n\tRND: {self.rnd_llegada_tecnico}\n\tTiempo en llegar: '
-    #             f'{self.tiempo_en_llegar_tecnico}\n\tProxima llegada tecnico: {self.proxima_llegada_tecnico}\n'
-    #             f'FinRegistroHuella \n\tRND: {self.rnd_fin_registro_huella}\n\tTiempo registro huella: '
-    #             f'{self.tiempo_registro_huella}\n\tFin Registro Huella T1: {self.fin_registro_huella_t1}\n\t'
-    #             f'Fin Registro Huella T2: {self.fin_registro_huella_t2}\n\t'
-    #             f'Fin Registro Huella T3: {self.fin_registro_huella_t3}\n\tFin Registro Huella T4: '
-    #             f'{self.fin_registro_huella_t4}\nFinMantenimientoTerminal\n\tRND: '
-    #             f'{self.rnd_fin_mantenimiento_terminal}\n\tTiempo Mantenimiento Terminal: '
-    #             f'{self.tiempo_mantenimiento_terminal}\n\tFin Mantenimiento T1: {self.fin_mantenimiento_terminal1}\n\t'
-    #             f'Fin Mantenimiento T2: {self.fin_mantenimiento_terminal2}\n\tFin Mantenimiento T3: '
-    #             f'{self.fin_mantenimiento_terminal3}\n\tFin Mantenimiento T4: {self.fin_mantenimiento_terminal4}\n'
-    #             f'AC Tiempo Espera: {self.acumulador_tiempo_espera}\nAC Empleados que salen temporalmente: {
-    #             self.acumulador_empleados_que_salen_temporalmente}\nAC Empleados que pasaron por el sistema: '
-    #             f'{self.acumulador_empleados_que_pasaron_por_el_sistema}\nTerminales\n\tEstado T1: '
-    #             f'{estado_terminales[0]}\n\tEstado T2: {estado_terminales[1]}\n\tEstado T3: {estado_terminales[2]}\n\t'
-    #             f'Estado T4: {estado_terminales[3]}\n\tCola: {self.get_cola()}\nTecnico'
-    #             f'{self.get_info_tecnico()}\n')
-    
+  
     def imprimir_columnas(self, iteracion):
         estado_terminales = self.get_estado_terminales()
         return (
@@ -171,18 +147,49 @@ class Simulacion:
 
     def encontrar_terminales_restantes_a_mantener(self, terminal_arreglada):
         terminales_restantes_a_mantener = []
+        terminales_libres = self.get_terminales_libres()
+        libre_sin_arreglar = False
+        
+        if len(terminales_libres) == 0:
+            if self.mantenimiento_t1 == "NO" and self.terminales[0].get_numero() != terminal_arreglada:
+                terminales_restantes_a_mantener.append(1)
 
-        if self.mantenimiento_t1 == "NO" and self.terminales[0].get_numero() != terminal_arreglada:
-            terminales_restantes_a_mantener.append(1)
+            if self.mantenimiento_t2 == "NO" and self.terminales[1].get_numero() != terminal_arreglada:
+                terminales_restantes_a_mantener.append(2)
 
-        if self.mantenimiento_t2 == "NO" and self.terminales[1].get_numero() != terminal_arreglada:
-            terminales_restantes_a_mantener.append(2)
+            if self.mantenimiento_t3 == "NO" and self.terminales[2].get_numero() != terminal_arreglada:
+                terminales_restantes_a_mantener.append(3)
 
-        if self.mantenimiento_t3 == "NO" and self.terminales[2].get_numero() != terminal_arreglada:
-            terminales_restantes_a_mantener.append(3)
+            if self.mantenimiento_t4 == "NO" and self.terminales[3].get_numero() != terminal_arreglada:
+                terminales_restantes_a_mantener.append(4)
+        else:
+            if self.mantenimiento_t1 == "NO" and 1 in terminales_libres and 1 != terminal_arreglada:
+                terminales_restantes_a_mantener.append(1)
+                libre_sin_arreglar = True
 
-        if self.mantenimiento_t4 == "NO" and self.terminales[3].get_numero() != terminal_arreglada:
-            terminales_restantes_a_mantener.append(4)
+            if self.mantenimiento_t2 == "NO" and 2 in terminales_libres and 2 != terminal_arreglada:
+                terminales_restantes_a_mantener.append(2)
+                libre_sin_arreglar = True
+
+            if self.mantenimiento_t3 == "NO" and 3 in terminales_libres and 3 != terminal_arreglada:
+                terminales_restantes_a_mantener.append(3)
+                libre_sin_arreglar = True
+
+            if self.mantenimiento_t4 == "NO" and 4 in terminales_libres and 4 != terminal_arreglada:
+                terminales_restantes_a_mantener.append(4)
+                libre_sin_arreglar = True
+            if libre_sin_arreglar == False:
+                if self.mantenimiento_t1 == "NO" and self.terminales[0].get_numero() != terminal_arreglada:
+                    terminales_restantes_a_mantener.append(1)
+
+                if self.mantenimiento_t2 == "NO" and self.terminales[1].get_numero() != terminal_arreglada:
+                    terminales_restantes_a_mantener.append(2)
+
+                if self.mantenimiento_t3 == "NO" and self.terminales[2].get_numero() != terminal_arreglada:
+                    terminales_restantes_a_mantener.append(3)
+
+                if self.mantenimiento_t4 == "NO" and self.terminales[3].get_numero() != terminal_arreglada:
+                    terminales_restantes_a_mantener.append(4)
 
         return terminales_restantes_a_mantener
 

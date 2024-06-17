@@ -413,6 +413,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
 
             # Si el tecnico termina de hacer mantenimiento a una terminal
             elif evento.startswith("fin_mantenimiento_terminal"):
+                
                 numero_terminal_arreglada = int(evento[-2])
 
                 if numero_terminal_arreglada == 1:
@@ -517,7 +518,9 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                         simulaciones[i].cola = simulaciones[i - 1].cola
                         simulaciones[i].acumulador_tiempo_espera = simulaciones[i - 1].acumulador_tiempo_espera
                         simulaciones[i].terminales[numero_terminal_arreglada - 1].estado = "L"
-
+                        
+                        
+                terminales_libres = simulaciones[i - 1].get_terminales_libres()
                 terminales_restantes = simulaciones[i].encontrar_terminales_restantes_a_mantener(numero_terminal_arreglada)
 
                 # Si ya terminó de mantener todas las terminales, se lanza el evento llegada_tecnico de vuelta

@@ -13,7 +13,8 @@ class VentanaDatosFinales:
         self.ventana.configure(bg="#f3f3d1")
 
         self.porcentaje_empleados_que_se_van_temporalmente = str(round(float(ac_emp_salen * 100 / ac_emp_pasaron), 2)) + ' %'
-        self.tiempo_promedio_espera = str(round(float(ac_tiempo_espera / reloj), 2)) + ' minutos'
+        # self.tiempo_promedio_espera = str(round(float(ac_tiempo_espera / reloj), 2)) + ' minutos'
+        self.tiempo_promedio_espera = str(round(float(ac_tiempo_espera / ac_emp_pasaron), 2)) + ' minutos'
 
         self.label_dato1 = tk.Label(self.ventana,
                                     text=f"Porcentaje de empleados que se van temporalmente para volver mas tarde: "
