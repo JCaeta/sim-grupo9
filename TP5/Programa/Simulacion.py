@@ -16,7 +16,8 @@ class Simulacion:
         self.fin_registro_huella_t3 = ""
         self.fin_registro_huella_t4 = ""
         self.cola = ""
-        self.rnd_fin_mantenimiento_terminal = ""
+        self.rnd_cant_archivos = ""
+        self.cant_archivos = ""
         self.tiempo_mantenimiento_terminal = ""
         self.fin_mantenimiento_terminal1 = ""
         self.fin_mantenimiento_terminal2 = ""
@@ -208,7 +209,8 @@ class Simulacion:
             'Estado T3': estado_terminales[2]['Estado T3'],
             'Estado T4': estado_terminales[3]['Estado T4'],
             'Cola': self.cola,
-            'RND Fin Mantenimiento Terminal': self.rnd_fin_mantenimiento_terminal,
+            'RND Cant Archivos': self.rnd_cant_archivos,
+            'Cant Archivos': self.cant_archivos,
             'Tiempo Mantenimiento Terminal': self.tiempo_mantenimiento_terminal,
             'Fin Mantenimiento T1': self.fin_mantenimiento_terminal1,
             'Fin Mantenimiento T2': self.fin_mantenimiento_terminal2,

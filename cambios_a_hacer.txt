@@ -1,0 +1,5 @@
+Cambios a hacer en el TP5:
+-Cambiar atributo RND de evento fin_mantenimiento_terminal, para que haga referencia a RND de Cant. Archivos
+-Agregar columna despues de la anterior que haga referencia a la cantidad de archivos de la terminal seleccionada (1000, 1500, 2000) (P=0,33)
+-La columna tiempo mantenimiento ahora va a ser llenada con el resultado obtenido del euler
+-Agregar logica y ventana de euler

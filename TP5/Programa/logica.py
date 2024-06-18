@@ -2,10 +2,10 @@ import random
 
 from Distribuciones import (DistribucionLlegadaTecnico, DistribucionLlegadaEmpleado, DistribucionFinRegistroHuella,
                             DistribucionFinMantenimientoTerminal)
-from Objetos import Empleado
-from Objetos import Terminal
+from Objetos import Empleado, Terminal, Euler
 from Simulacion import Simulacion
 from utilidades import *
+
 
 
 def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
