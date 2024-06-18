@@ -18,6 +18,7 @@ class Simulacion:
         self.cola = ""
         self.rnd_cant_archivos = ""
         self.cant_archivos = ""
+        self.nro_integracion = ""
         self.tiempo_mantenimiento_terminal = ""
         self.fin_mantenimiento_terminal1 = ""
         self.fin_mantenimiento_terminal2 = ""
@@ -37,7 +38,7 @@ class Simulacion:
         self.lista_empleados = []
         self.empleados = []
 
-    def imprimir_columnas(self, iteracion):
+    '''def imprimir_columnas(self, iteracion):
         estado_terminales = self.get_estado_terminales()
         return (
             f"{'-'*10} Iteracion nº: {iteracion} {'-'*10}\n"
@@ -57,6 +58,7 @@ class Simulacion:
             f"Terminales\n\tEstado T1: {estado_terminales[0]}\n\tEstado T2: {estado_terminales[1]}\n\tEstado T3: {estado_terminales[2]}\n\tEstado T4: {estado_terminales[3]}\n\tCola: {self.get_cola()}\n"
             f"Tecnico{self.get_info_tecnico()}\nEmpleados\n{self.get_info_empleados()}"
         )
+    '''
         
     def get_reloj(self):
         return self.reloj
@@ -211,6 +213,7 @@ class Simulacion:
             'Cola': self.cola,
             'RND Cant Archivos': self.rnd_cant_archivos,
             'Cant Archivos': self.cant_archivos,
+            'Nº Integración': self.nro_integracion,
             'Tiempo Mantenimiento Terminal': self.tiempo_mantenimiento_terminal,
             'Fin Mantenimiento T1': self.fin_mantenimiento_terminal1,
             'Fin Mantenimiento T2': self.fin_mantenimiento_terminal2,

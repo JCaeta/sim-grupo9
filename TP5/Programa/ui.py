@@ -1,8 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
 from logica import simulacion
+from Objetos import Euler
 import pandas as pd
 from tksheet import Sheet
+import openpyxl
+from openpyxl.styles import PatternFill
 
 class VentanaDatosFinales:
     def __init__(self, ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj):
@@ -37,8 +40,6 @@ class TablaPandas:
 
         df = pd.DataFrame(self.datos)
 
-        # df = df.iloc[:, :34] # No incluir columnas de empleados
-
         root = tk.Tk()
         root.title("Tabla de Simulación")
 
@@ -68,6 +69,65 @@ class TablaPandas:
 
         VentanaDatosFinales(ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj)
 
+class ExcelEuler:
+    def __init__(self, h):
+        self.h = h
+        self.wb = openpyxl.Workbook()
+        self.ws = self.wb.active
+
+    def set_estructura(self):
+        # Definir el contenido y la estructura
+        data = [
+            ("G10", "Ao"), ("H10", 2000),
+
+            ("G11", "h"), ("H11", self.h),
+
+            ("N10", "Ao"), ("O10", 1500),
+
+            ("N11", "h"), ("O11", self.h),
+
+            ("U10", "Ao"), ("V10", 1000),
+
+            ("U11", "h"), ("V11", self.h),
+
+            # Encabezados
+            ("E15", "t"), ("F15", "A"), ("G15", "dA/dt"), ("H15", "t+1"), ("I15", "A+1 e"),
+            ("L15", "t"), ("M15", "A"), ("N15", "dA/dt"), ("O15", "t+1"), ("P15", "A+1 e"),
+            ("S15", "t"), ("T15", "A"), ("U15", "dA/dt"), ("V15", "t+1"), ("W15", "A+1 e"),
+
+            # Datos
+            ("H16", 0), ("I16", 2000),
+            ("O16", 0), ("P16", 1500),
+            ("V16", 0), ("W16", 1000),
+
+            # Probabilidades
+            ("Y5", "Cant. Archivos"), ("Z5", "P()"), ("AA5", "P() AC"),
+            ("Y6", 1000), ("Z6", "0,33"), ("AA6", "0.33"),
+            ("Y7", 1500), ("Z7", "0,33"), ("AA7", "0.67"),
+            ("Y8", 2000), ("Z8", "0,33"), ("AA8", "1"),
+
+            # Fila 21 - Encabezados tabla final
+            ("Y15", "Mantenimiento n°"),
+            ("Z15", "Cant. Archivos"),
+            ("AA15", "Tiempo (minutos)")
+        ]
+
+        # Aplicar el contenido y la estructura
+        for cell, value in data:
+            self.ws[cell] = value
+
+        # Aplicar fondo rojo a las filas de encabezados
+        fill = PatternFill(start_color="EAB676", end_color="EAB676", fill_type="solid")
+        for cell in ["E15", "F15", "G15", "H15", "I15", "L15", "M15", "N15", "O15", "P15", "S15", "T15", "U15", "V15", "W15", "Y15", "Z15", "AA15"]:
+            self.ws[cell].fill = fill
+
+        self.ws.column_dimensions['Y'].width = 18
+        self.ws.column_dimensions['Z'].width = 18
+        self.ws.column_dimensions['AA'].width = 20
+
+    def guardar(self, filename):
+        self.wb.save(filename)
+
 
 class App:
     def __init__(self):
@@ -95,6 +155,11 @@ class App:
         self.label_minuto_desde.place(x=50, y=140)
         self.entry_minuto_desde = tk.Entry(font=("Helvetica", 12), width=10)
         self.entry_minuto_desde.place(x=65, y=170)
+
+        self.label_h = tk.Label(text="Valor de h", font=("Helvetica", 14, "bold"), bg='#f3f3d1')
+        self.label_h.place(x=65, y=200)
+        self.entry_h = tk.Entry(font=("Helvetica", 12), width=10)
+        self.entry_h.place(x=65, y=230)
 
         # MEDIO DE LA VENTANA #
         self.label_evento_llegada_empleado = tk.Label(text="Evento llegada_empleado", font=("Helvetica", 14, "bold"),
@@ -160,14 +225,25 @@ class App:
             minuto_B_fin_registro_huella = float(self.entry_minuto_B_fin_registro_huella.get())
             minuto_A_fin_mantenimiento_terminal = float(self.entry_minuto_A_fin_mantenimiento_terminal.get())
             minuto_B_fin_mantenimiento_terminal = float(self.entry_minuto_B_fin_mantenimiento_terminal.get())
+            valor_h = float(self.entry_h.get())
 
             minuto_B_es_correcto = True if (hora_A_llegada_tecnico * 60 - minuto_B_llegada_tecnico >= 0) else False
 
             if cantidad_tiempo > 0 and(cantidad_iteraciones_a_mostrar >= 0 or cantidad_iteraciones_a_mostrar > 100000) and (minuto_desde >= 0):
-                if (media_llegada_empleado > 0):
+                if (media_llegada_empleado > 0) and valor_h > 0:
                     if (hora_A_llegada_tecnico >= 0 and minuto_B_es_correcto):
                         if (minuto_A_fin_registro_huella >= 0 and minuto_B_fin_registro_huella >= 0 and minuto_B_fin_registro_huella > minuto_A_fin_registro_huella):
                             if (minuto_A_fin_mantenimiento_terminal >= 0 and minuto_B_fin_mantenimiento_terminal >= 0 and minuto_B_fin_mantenimiento_terminal > minuto_A_fin_mantenimiento_terminal):
+
+                                excel = ExcelEuler(h=valor_h)
+                                excel.set_estructura()
+                                excel.guardar('../integraciones_euler.xlsx')
+
+                                euler = Euler.Euler(h=valor_h)
+                                euler.integracion_2000()
+                                euler.integracion_1500()
+                                euler.integracion_1000()
+
                                 datos, ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj = simulacion(
                                     minutoARegistroHuella=minuto_A_fin_registro_huella,
                                     minutoBRegistroHuella=minuto_B_fin_registro_huella,
@@ -178,8 +254,9 @@ class App:
                                     minutoBMantenimientoTerminal=minuto_B_fin_mantenimiento_terminal,
                                     cantidad_tiempo=cantidad_tiempo,
                                     cantidad_datos_a_mostrar=cantidad_iteraciones_a_mostrar,
-                                    minuto_desde=minuto_desde)
+                                    minuto_desde=minuto_desde, h=valor_h)
                                 TablaPandas(datos, ac_tiempo_espera, ac_emp_pasaron, ac_emp_salen, reloj)
+
 
                             else:
                                 messagebox.showerror("Error", "Ha ingresado algún dato erróneo. Revise de vuelta")

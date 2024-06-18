@@ -14,3 +14,11 @@ def generador_exponencial(media, random):
     return round((-media * log(1 - random)), 2)
 
 
+def encontrar_cantidad_archivos(random):
+    if random < 0.33:
+        return 1000
+
+    if random < 0.67:
+        return 1500
+
+    return 2000

@@ -11,10 +11,10 @@ from utilidades import *
 def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                horaALlegadaTecnico, minutoBLlegadaTecnico,
                minutoAMantenimientoTerminal, minutoBMantenimientoTerminal,
-               mediaLlegadaEmpleado, cantidad_tiempo, cantidad_datos_a_mostrar, minuto_desde):
+               mediaLlegadaEmpleado, cantidad_tiempo, cantidad_datos_a_mostrar, minuto_desde, h):
 
     # Inicialización de cada distribución
-
+    euler = Euler.Euler(h=h)
     dist_registro_huella = DistribucionFinRegistroHuella.DistribucionFinRegistroHuella(a=minutoARegistroHuella,
                                                                                        b=minutoBRegistroHuella)
 
@@ -63,6 +63,8 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
     fin_mantenimiento_t4 = "-"
 
     cola_terminales = 0
+
+    numero_integracion = 1
 
     acumulador_tiempo_espera = 0
     acumulador_empleados_que_salen_temporalmente = 0
@@ -116,7 +118,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
     simulaciones.append(sim)
 
     i = 1
-    simulaciones[0].imprimir_columnas(0)
+
     while simulaciones[-1].reloj <= cantidad_tiempo:
         print(f'Iteración: {i}\n')
         if i == 100000:
@@ -237,11 +239,12 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                 if len(terminales_libres) > 0:
                     proxima_terminal = terminales_libres[0]
 
-                    simulaciones[i].rnd_fin_mantenimiento_terminal = round(rnd(), 2)
-                    simulaciones[i].tiempo_mantenimiento_terminal = generador_uniforme(
-                        a=dist_mantenimiento_terminal.get_a(),
-                        b=dist_mantenimiento_terminal.get_b(),
-                        random=simulaciones[i].rnd_fin_mantenimiento_terminal)
+                    simulaciones[i].rnd_cant_archivos = round(rnd(), 2)
+                    simulaciones[i].cant_archivos = encontrar_cantidad_archivos(simulaciones[i].rnd_cant_archivos)
+                    simulaciones[i].nro_integracion = numero_integracion
+                    numero_integracion += 1
+                    simulaciones[i].tiempo_mantenimiento_terminal = euler.calcular_tiempo(cant_archivos=simulaciones[i].cant_archivos,
+                                                                                          numero_mantenimiento=simulaciones[i].nro_integracion)
 
                     if proxima_terminal == 1:
                         simulaciones[i].fin_mantenimiento_terminal1 = round(
@@ -307,11 +310,12 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                     simulaciones[i].cola = simulaciones[i - 1].cola
 
                     if simulaciones[i - 1].mantenimiento_t1 == "NO" and numero_terminal_fin_registro_actual == 1:
-                        simulaciones[i].rnd_fin_mantenimiento_terminal = round(rnd(), 2)
-                        simulaciones[i].tiempo_mantenimiento_terminal = generador_uniforme(
-                            a=dist_mantenimiento_terminal.get_a(),
-                            b=dist_mantenimiento_terminal.get_b(),
-                            random=simulaciones[i].rnd_fin_mantenimiento_terminal)
+                        simulaciones[i].rnd_cant_archivos = round(rnd(), 2)
+                        simulaciones[i].cant_archivos = encontrar_cantidad_archivos(simulaciones[i].rnd_cant_archivos)
+                        simulaciones[i].nro_integracion = numero_integracion
+                        numero_integracion += 1
+                        simulaciones[i].tiempo_mantenimiento_terminal = euler.calcular_tiempo(cant_archivos=simulaciones[i].cant_archivos,
+                                                                                              numero_mantenimiento=simulaciones[i].nro_integracion)
                         simulaciones[i].estado_tecnico = "RM (1)"
                         simulaciones[i].fin_mantenimiento_terminal1 = round(
                             simulaciones[i].tiempo_mantenimiento_terminal
@@ -324,11 +328,13 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                         asignacion_tecnico = True
 
                     if simulaciones[i - 1].mantenimiento_t2 == "NO" and numero_terminal_fin_registro_actual == 2:
-                        simulaciones[i].rnd_fin_mantenimiento_terminal = round(rnd(), 2)
-                        simulaciones[i].tiempo_mantenimiento_terminal = generador_uniforme(
-                            a=dist_mantenimiento_terminal.get_a(),
-                            b=dist_mantenimiento_terminal.get_b(),
-                            random=simulaciones[i].rnd_fin_mantenimiento_terminal)
+                        simulaciones[i].rnd_cant_archivos = round(rnd(), 2)
+                        simulaciones[i].cant_archivos = encontrar_cantidad_archivos(simulaciones[i].rnd_cant_archivos)
+                        simulaciones[i].nro_integracion = numero_integracion
+                        simulaciones[i].tiempo_mantenimiento_terminal = euler.calcular_tiempo(
+                            cant_archivos=simulaciones[i].cant_archivos,
+                            numero_mantenimiento=simulaciones[i].nro_integracion)
+                        numero_integracion += 1
                         simulaciones[i].estado_tecnico = "RM (2)"
                         simulaciones[i].fin_mantenimiento_terminal2 = round(
                             simulaciones[i].tiempo_mantenimiento_terminal
@@ -341,11 +347,13 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                         asignacion_tecnico = True
 
                     if simulaciones[i - 1].mantenimiento_t3 == "NO" and numero_terminal_fin_registro_actual == 3:
-                        simulaciones[i].rnd_fin_mantenimiento_terminal = round(rnd(), 2)
-                        simulaciones[i].tiempo_mantenimiento_terminal = generador_uniforme(
-                            a=dist_mantenimiento_terminal.get_a(),
-                            b=dist_mantenimiento_terminal.get_b(),
-                            random=simulaciones[i].rnd_fin_mantenimiento_terminal)
+                        simulaciones[i].rnd_cant_archivos = round(rnd(), 2)
+                        simulaciones[i].cant_archivos = encontrar_cantidad_archivos(simulaciones[i].rnd_cant_archivos)
+                        simulaciones[i].nro_integracion = numero_integracion
+                        numero_integracion += 1
+                        simulaciones[i].tiempo_mantenimiento_terminal = euler.calcular_tiempo(
+                            cant_archivos=simulaciones[i].cant_archivos,
+                            numero_mantenimiento=simulaciones[i].nro_integracion)
                         simulaciones[i].estado_tecnico = "RM (3)"
                         simulaciones[i].fin_mantenimiento_terminal3 = round(
                             simulaciones[i].tiempo_mantenimiento_terminal
@@ -358,11 +366,13 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                         asignacion_tecnico = True
 
                     if simulaciones[i - 1].mantenimiento_t4 == "NO" and numero_terminal_fin_registro_actual == 4:
-                        simulaciones[i].rnd_fin_mantenimiento_terminal = round(rnd(), 2)
-                        simulaciones[i].tiempo_mantenimiento_terminal = generador_uniforme(
-                            a=dist_mantenimiento_terminal.get_a(),
-                            b=dist_mantenimiento_terminal.get_b(),
-                            random=simulaciones[i].rnd_fin_mantenimiento_terminal)
+                        simulaciones[i].rnd_cant_archivos = round(rnd(), 2)
+                        simulaciones[i].cant_archivos = encontrar_cantidad_archivos(simulaciones[i].rnd_cant_archivos)
+                        simulaciones[i].nro_integracion = numero_integracion
+                        numero_integracion += 1
+                        simulaciones[i].tiempo_mantenimiento_terminal = euler.calcular_tiempo(
+                            cant_archivos=simulaciones[i].cant_archivos,
+                            numero_mantenimiento=simulaciones[i].nro_integracion)
                         simulaciones[i].estado_tecnico = "RM (4)"
                         simulaciones[i].fin_mantenimiento_terminal4 = round(
                             simulaciones[i].tiempo_mantenimiento_terminal
@@ -565,11 +575,12 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
 
                 # Si quedan terminales por mantener y encuentra una libre
                 else:
-                    simulaciones[i].rnd_fin_mantenimiento_terminal = round(rnd(), 2)
-                    simulaciones[i].tiempo_mantenimiento_terminal = generador_uniforme(
-                        a=dist_mantenimiento_terminal.get_a(),
-                        b=dist_mantenimiento_terminal.get_b(),
-                        random=simulaciones[i].rnd_fin_mantenimiento_terminal)
+                    simulaciones[i].rnd_cant_archivos = round(rnd(), 2)
+                    simulaciones[i].cant_archivos = encontrar_cantidad_archivos(simulaciones[i].rnd_cant_archivos)
+                    simulaciones[i].nro_integracion = numero_integracion
+                    simulaciones[i].tiempo_mantenimiento_terminal = euler.calcular_tiempo(
+                        cant_archivos=simulaciones[i].cant_archivos,
+                        numero_mantenimiento=simulaciones[i].nro_integracion)
 
                     if proxima_terminal == 1:
                         simulaciones[i].fin_mantenimiento_terminal1 = round(
@@ -592,7 +603,7 @@ def simulacion(minutoARegistroHuella, minutoBRegistroHuella,
                             + simulaciones[i].reloj, 2)
 
                     simulaciones[i].terminales[proxima_terminal - 1].estado = "OM"
-
+                    numero_integracion += 1
                     simulaciones[i].estado_tecnico = "RM" + '(' + str(proxima_terminal) + ')'
 
                 # Fijarse si hay algun empleado en cola para asignar a la terminal que fue mantenida
